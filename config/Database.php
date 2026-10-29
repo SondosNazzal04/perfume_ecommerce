@@ -2,39 +2,50 @@
 
 class Database
 {
-    private string $host = "localhost";
-    private string $dbName = "perfume_ecommerce";
-    private string $username = "root";
-    private string $password = "";
+    private $db;
 
-    private ?PDO $connection = null;
+    public function __construct()
+    {
+        $this->db = new PDO(
+            "mysql:host=localhost;dbname=perfume_ecommerce;charset=utf8mb4",
+            "root",
+            "",
+            [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                PDO::ATTR_EMULATE_PREPARES => false
+            ]
+        );
+    }
 
     public function connect(): PDO
     {
-        if ($this->connection === null) {
-            try {
-                $dsn = "mysql:host={$this->host};dbname={$this->dbName};charset=utf8mb4";
+        return $this->db;
+    }
 
-                $this->connection = new PDO(
-                    $dsn,
-                    $this->username,
-                    $this->password,
-                    [
-                        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                        PDO::ATTR_EMULATE_PREPARES => false
-                    ]
-                );
+    public function run_query(string $query, array $param = [])
+    {
+        $stmt = $this->db->prepare($query);
+        $stmt->execute($param);
+        return $stmt;
+    }
 
-            } catch (PDOException $e) {
-                error_log($e->getMessage());
+    public function beginTransaction()
+    {
+        return $this->db->beginTransaction();
+    }
 
-                throw new RuntimeException(
-                    "Database connection failed."
-                );
-            }
+    public function commit()
+    {
+        return $this->db->commit();
+    }
+
+    public function rollBack()
+    {
+        if ($this->db->inTransaction()) {
+            return $this->db->rollBack();
         }
 
-        return $this->connection;
+        return false;
     }
 }
