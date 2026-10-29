@@ -1,12 +1,11 @@
 <?php
 // File: api/cart.php
-header('Content-Type: application/json');
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST)) {
-    die(json_encode(["status" => "error", "message" => "Postman is not sending any POST data. Check the Body tab."]));
-}
+
+
 require_once __DIR__ . '/../config/Database.php';
 require_once __DIR__ . '/../classes/Cart.php';
 
+try{
 // Initialize Database and Cart class
 $db = new Database();
 $pdo = $db->connect();
@@ -17,7 +16,7 @@ $userId = 1;
 
 $action = $_GET['action'] ?? $_POST['action'] ?? '';
 
-try {
+
     switch ($action) {
         case 'add':
             $variantId = $_POST['variant_id'] ?? 0;
@@ -26,6 +25,9 @@ try {
             if ($cart->addItem($userId, $variantId, $quantity)) {
                 echo json_encode(["status" => "success", "message" => "Item added to cart"]);
             }
+            else {
+                echo json_encode(["status" => "error", "message" => "Failed to add item to cart"]);
+            }
             break;
 
         case 'get':
@@ -33,12 +35,27 @@ try {
             echo json_encode(["status" => "success", "data" => $items]);
             break;
 
+        case 'update':
+            $cartId = $_POST['cart_id'] ?? 0;
+            $quantity = $_POST['quantity'] ?? 1;
+            
+            if ($cart->updateQuantity($cartId, $userId, $quantity)) {
+                echo json_encode(["status" => "success", "message" => "Quantity updated"]);
+            }
+            else {
+                echo json_encode(["status" => "error", "message" => "Failed to update quantity"]);
+            }
+            break;
+
         case 'remove':
             $cartId = $_POST['cart_id'] ?? 0;
             
             if ($cart->removeItem($cartId, $userId)) {
                 echo json_encode(["status" => "success", "message" => "Item removed"]);
+            }else {
+                echo json_encode(["status" => "error", "message" => "Failed to remove item"]);
             }
+            
             break;
 
         default:
