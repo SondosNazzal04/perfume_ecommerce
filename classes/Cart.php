@@ -11,7 +11,7 @@ class Cart {
 
      // Add item to cart (or update quantity if it exists)
     public function addItem($userId, $variantId, $quantity) {
-        // Changed the second :quantity to :quantity_add to fix the PDO error
+      
         $sql = "INSERT INTO cart_items (user_id, variant_id, quantity) 
                 VALUES (:user_id, :variant_id, :quantity) 
                 ON DUPLICATE KEY UPDATE quantity = quantity + :quantity_add";
@@ -47,9 +47,13 @@ class Cart {
         return $stmt->execute([':cart_id' => $cartId, ':user_id' => $userId]);
     }
 
+  // Clear the entire cart for a specific user
+    public function clearCart($userId) {
+        $sql = "DELETE FROM cart_items WHERE user_id = :user_id";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute([':user_id' => $userId]);
+    }
 
-
-    
     // Update item quantity in cart
     public function updateQuantity($cartId, $userId, $quantity) {
         

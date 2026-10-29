@@ -1,9 +1,8 @@
 <?php
-// File: api/cart.php
+
 
 require_once __DIR__ . '/../config/Database.php';
 require_once __DIR__ . '/../classes/Cart.php';
-// Assuming you have a Response class like the coach's code. If not, I will provide it below.
 require_once __DIR__ . '/../core/Response.php';
 
 header("Content-Type: application/json; charset=UTF-8");
@@ -45,7 +44,7 @@ if (isset($_GET["id"])) {
     }
 }
 
-// 3. Helper function to read JSON body (Exactly like the coach's approach)
+// 3. Helper function to read JSON body 
 function getJsonBody(): array
 {
     $rawBody = file_get_contents("php://input");
@@ -142,25 +141,34 @@ try {
             }
             break;
 
-        // DELETE: Remove an item from the cart
+        // DELETE: Remove an item OR clear the whole cart
         case "DELETE":
+            // If no ID is provided in the URL, clear the entire cart
             if ($id === null) {
-                Response::json(400, [
-                    "success" => false,
-                    "message" => "Cart item ID is required in the URL (e.g., ?id=1)"
-                ]);
-            }
-
-            if ($cart->removeItem($id, $userId)) {
-                Response::json(200, [
-                    "success" => true,
-                    "message" => "Item removed from cart successfully"
-                ]);
+                if ($cart->clearCart($userId)) {
+                    Response::json(200, [
+                        "success" => true,
+                        "message" => "Cart cleared successfully"
+                    ]);
+                } else {
+                    Response::json(400, [
+                        "success" => false,
+                        "message" => "Failed to clear cart"
+                    ]);
+                }
             } else {
-                Response::json(400, [
-                    "success" => false,
-                    "message" => "Failed to remove item"
-                ]);
+                // If ID is provided, remove only that specific item
+                if ($cart->removeItem($id, $userId)) {
+                    Response::json(200, [
+                        "success" => true,
+                        "message" => "Item removed from cart successfully"
+                    ]);
+                } else {
+                    Response::json(400, [
+                        "success" => false,
+                        "message" => "Failed to remove item"
+                    ]);
+                }
             }
             break;
 
