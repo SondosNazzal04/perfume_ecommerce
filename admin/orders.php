@@ -70,6 +70,8 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                                 <th>Customer</th>
                                 <th>Date</th>
                                 <th>Total</th>
+                                <!-- Added Payment Column -->
+                                <th>Payment</th>
                                 <th>Status</th>
                                 <th>Change Status</th>
                                 <th>Action</th>
@@ -77,7 +79,8 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                         </thead>
                         <tbody id="orders-body">
                             <tr>
-                                <td colspan="7" class="text-center py-4">
+                                <!-- Updated colspan to 8 -->
+                                <td colspan="8" class="text-center py-4">
                                     <div class="spinner-border text-primary" role="status"></div>
                                     <p class="mt-2 mb-0">Loading orders...</p>
                                 </td>
@@ -90,9 +93,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     </div>
 </div>
 
-<!-- ========================================== -->
-<!-- 1. MODAL FOR ORDER DETAILS (الجزء الناقص) -->
-<!-- ========================================== -->
+
 <div class="modal fade" id="orderDetailsModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -174,7 +175,8 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
         } catch (error) {
             console.error('Error:', error);
             document.getElementById('orders-body').innerHTML = 
-                `<tr><td colspan="7" class="text-center text-danger">Failed to load orders.</td></tr>`;
+                // Updated colspan to 8
+                `<tr><td colspan="8" class="text-center text-danger">Failed to load orders.</td></tr>`;
         }
     }
 
@@ -183,11 +185,13 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
         tbody.innerHTML = '';
 
         if (orders.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="7" class="text-center py-4">No orders found.</td></tr>`;
+            // Updated colspan to 8
+            tbody.innerHTML = `<tr><td colspan="8" class="text-center py-4">No orders found.</td></tr>`;
             return;
         }
 
         orders.forEach(order => {
+            // Determine Status Badge Color
             let badgeClass = 'bg-secondary';
             if (order.status === 'pending') badgeClass = 'bg-warning text-dark';
             if (order.status === 'processing') badgeClass = 'bg-info text-dark';
@@ -197,11 +201,28 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 
             const date = new Date(order.created_at).toLocaleString();
 
+            // Determine Payment Method Badge
+            let paymentBadge = '';
+            if (order.payment_method === 'visa') {
+                paymentBadge = `<span class="badge bg-primary"><i class="fab fa-cc-visa me-1"></i> Visa</span>`;
+            } else if (order.payment_method === 'cash') {
+                paymentBadge = `<span class="badge bg-success"><i class="fas fa-money-bill-wave me-1"></i> Cash</span>`;
+            } else {
+                paymentBadge = `<span class="badge bg-secondary">N/A</span>`;
+            }
+
+            // Status Dropdown Options (Admin only changes to Delivered or Cancelled)
             const statusOptions = ['delivered', 'cancelled'];
             let selectHtml = `<select class="form-select form-select-sm" onchange="updateStatus(${order.id}, this.value)">`;
+            
+            // Show current status as disabled selected option
+            selectHtml += `<option value="" selected disabled>Select Action</option>`;
+            
             statusOptions.forEach(opt => {
-                const selected = (order.status === opt) ? 'selected' : '';
-                selectHtml += `<option value="${opt}" ${selected}>${opt.charAt(0).toUpperCase() + opt.slice(1)}</option>`;
+                // Hide the option if it's the current status
+                if (order.status !== opt) {
+                    selectHtml += `<option value="${opt}">${opt.charAt(0).toUpperCase() + opt.slice(1)}</option>`;
+                }
             });
             selectHtml += `</select>`;
 
@@ -211,6 +232,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                     <td>${order.customer_name}</td>
                     <td>${date}</td>
                     <td class="fw-bold">$${parseFloat(order.total_amount).toFixed(2)}</td>
+                    <td>${paymentBadge}</td> <!-- Added Payment Badge here -->
                     <td><span class="badge ${badgeClass} status-badge">${order.status.toUpperCase()}</span></td>
                     <td style="max-width: 150px;">${selectHtml}</td>
                     <td>
@@ -224,6 +246,8 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     }
 
     async function updateStatus(orderId, newStatus) {
+        if (!newStatus) return; // Prevent execution if "Select Action" is chosen
+
         try {
             const response = await fetch(`../api/admin-orders.php?id=${orderId}`, {
                 method: 'PUT',

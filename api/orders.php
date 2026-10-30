@@ -45,10 +45,8 @@ try {
     $orderModel = new Order($pdo);
 
     switch ($method) {
+    
         // CREATE ORDER (CHECKOUT)
-        
-
-                 // CREATE ORDER (CHECKOUT)
         case "POST":
             $body = getJsonBody();
 

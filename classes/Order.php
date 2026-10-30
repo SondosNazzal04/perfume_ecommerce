@@ -86,14 +86,15 @@ class Order {
         }
     }
 
-
-        // Get all orders (For Admin Dashboard)
+   // Get all orders (For Admin Dashboard)
     public function getAllOrders() {
-                $this->autoConfirmOrders(); 
+        $this->autoConfirmOrders(); 
 
-        $sql = "SELECT o.*, u.name as customer_name 
+        // Added LEFT JOIN with payments to fetch the payment_method
+        $sql = "SELECT o.*, u.name as customer_name, p.payment_method 
                 FROM orders o
                 JOIN users u ON o.user_id = u.id
+                LEFT JOIN payments p ON o.id = p.order_id
                 ORDER BY o.created_at DESC";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
