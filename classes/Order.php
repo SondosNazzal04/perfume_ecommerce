@@ -225,6 +225,14 @@ class Order {
             return $this->cancelOrder($orderId, true);
         }
 
+        $stmtCheck = $this->pdo->prepare("SELECT status FROM orders WHERE id = :id");
+        $stmtCheck->execute([':id' => $orderId]);
+        $currentOrder = $stmtCheck->fetch();
+
+        if ($currentOrder && $currentOrder['status'] === 'cancelled') {
+            throw new Exception("Cannot deliver a cancelled order.");
+        }
+
         // Update order status to delivered
         $sql = "UPDATE orders SET status = :status WHERE id = :order_id";
         $stmt = $this->pdo->prepare($sql);
