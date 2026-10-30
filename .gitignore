@@ -2,3 +2,6 @@
 /vendor/
 /uploads/products/*
 !/uploads/products/.gitkeep
+/config/mail.php
+/config/google.php
+
