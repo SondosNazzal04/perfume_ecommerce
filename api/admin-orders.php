@@ -6,7 +6,13 @@ require_once __DIR__ . '/../classes/Order.php';
 require_once __DIR__ . '/../core/Response.php';
 
 header("Content-Type: application/json; charset=UTF-8");
-
+// Check if the user is logged in and has admin privileges
+session_start();
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+    // Return 403 Forbidden if not an admin
+    Response::json(403, ["success" => false, "message" => "Access Denied: Admins only"]);
+    exit;
+}
 // Connect to Database
 try {
     $database = new Database();

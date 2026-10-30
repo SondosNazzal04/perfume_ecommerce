@@ -1,3 +1,13 @@
+<?php
+session_start();
+// Check if the user is logged in
+if (!isset($_SESSION['user_id'])) {
+    // Redirect to login page if not logged in
+    header("Location: login.php");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -98,7 +108,7 @@
                             </div>
                             <div class="d-flex justify-content-between mb-3 text-muted">
                                 <span>Delivery Fee</span>
-                                <span>$5.00</span> <!-- Fixed fee as per our backend -->
+                                <span id="delivery-fee-text">$5.00</span>
                             </div>
                             <hr>
                             <div class="d-flex justify-content-between mb-4 fw-bold fs-4">
@@ -122,14 +132,12 @@
     <!-- JavaScript Logic -->
     <script>
         let cartSubtotal = 0;
-        const deliveryFee = 5.00; // Matches the PHP backend calculation
+        const deliveryFee = 5.00;
 
-        // Load cart summary on page load
         document.addEventListener("DOMContentLoaded", () => {
             loadSummary();
         });
 
-        // 1. Fetch Cart Summary (GET)
         async function loadSummary() {
             try {
                 const response = await fetch('api/cart.php');
@@ -149,41 +157,52 @@
                         return;
                     }
 
-                    // Calculate Subtotal
+                    // Calculate Subtotal (Using parseFloat to prevent string math errors)
                     data.data.forEach(item => {
-                        cartSubtotal += (item.price * item.quantity);
+                        cartSubtotal += (parseFloat(item.price) * parseInt(item.quantity));
                     });
 
                     // Update UI
                     document.getElementById('subtotal-text').innerText = `$${cartSubtotal.toFixed(2)}`;
-                    const grandTotal = cartSubtotal + deliveryFee;
+                    
+                    // Free delivery logic
+                    let currentDeliveryFee = deliveryFee;
+                    if (cartSubtotal >= 100) {
+                        currentDeliveryFee = 0.00;
+                        document.getElementById('delivery-fee-text').innerText = 'Free';
+                        document.getElementById('delivery-fee-text').classList.add('text-success', 'fw-bold');
+                    } else {
+                        document.getElementById('delivery-fee-text').innerText = `$${currentDeliveryFee.toFixed(2)}`;
+                    }
+
+                    const grandTotal = cartSubtotal + currentDeliveryFee;
                     document.getElementById('total-text').innerText = `$${grandTotal.toFixed(2)}`;
 
                 } else {
                     console.error("Failed to load cart", data.message);
                 }
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Fetch Error:', error);
             }
         }
 
-        // 2. Submit Order (POST)
         document.getElementById('checkout-form').addEventListener('submit', async (e) => {
-            e.preventDefault(); // Prevent standard form submission
+            e.preventDefault();
 
-            // Show loading state
             const submitBtn = document.getElementById('submit-btn');
             const originalBtnText = submitBtn.innerHTML;
             submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Processing...`;
             submitBtn.disabled = true;
 
-            // Get form data
+            // Get selected payment method
+            const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+
             const formData = {
                 city: document.getElementById('city').value.trim(),
                 area: document.getElementById('area').value.trim(),
                 street: document.getElementById('street').value.trim(),
-                building: document.getElementById('building').value.trim()
-                // Note: payment_method is ignored by current backend, but can be added later
+                building: document.getElementById('building').value.trim(),
+                payment_method: paymentMethod // Added this!
             };
 
             try {
@@ -194,23 +213,35 @@
                 });
                 
                 const data = await response.json();
-
+                
+                // Corrected Brackets and Logic
                 if (data.success) {
-                    // Success Alert
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Order Placed!',
-                        text: `Your order #${data.order_id} has been created successfully. Total: $${data.calculated_total}`,
-                        confirmButtonText: 'View My Orders',
-                        allowOutsideClick: false
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            // Redirect to My Orders page (will be built later)
-                            window.location.href = 'my-orders.php'; 
-                        }
-                    });
+                    if (data.checkout_url) {
+                        // Stripe Flow
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Redirecting to Payment...',
+                            text: 'Please wait while we redirect you to Stripe.',
+                            showConfirmButton: false,
+                            allowOutsideClick: false
+                        });
+                        window.location.href = data.checkout_url;
+                    } else if (data.order_id) {
+                        // Cash Flow
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Order Placed!',
+                            text: `Your order #${data.order_id} has been created successfully. Total: $${data.calculated_total}`,
+                            confirmButtonText: 'View My Orders',
+                            allowOutsideClick: false
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = 'my-orders.php'; 
+                            }
+                        });
+                    }
                 } else {
-                    // Error Alert
+                    // Error Flow
                     Swal.fire({
                         icon: 'error',
                         title: 'Checkout Failed',
