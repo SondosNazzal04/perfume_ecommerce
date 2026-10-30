@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -181,7 +182,7 @@
 
             const date = new Date(order.created_at).toLocaleString();
 
-            const statusOptions = ['pending', 'processing', 'confirmed', 'delivered', 'cancelled'];
+            const statusOptions = ['delivered', 'cancelled'];
             let selectHtml = `<select class="form-select form-select-sm" onchange="updateStatus(${order.id}, this.value)">`;
             statusOptions.forEach(opt => {
                 const selected = (order.status === opt) ? 'selected' : '';
@@ -228,36 +229,29 @@
         }
     }
 
-    // ==========================================
-    // 2. VIEW ORDER DETAILS FUNCTION (الجزء الناقص)
-    // ==========================================
+
     async function viewOrderDetails(orderId) {
         try {
-            // جلب بيانات طلب واحد محدد
             const response = await fetch(`../api/admin-orders.php?id=${orderId}`);
             const data = await response.json();
 
             if (data.success) {
                 const order = data.data;
                 
-                // تعبئة بيانات العميل
                 document.getElementById('modal-order-id').innerText = `#${order.id}`;
                 document.getElementById('modal-customer-name').innerText = order.customer_name;
                 document.getElementById('modal-customer-email').innerText = order.email;
                 document.getElementById('modal-date').innerText = new Date(order.created_at).toLocaleString();
                 
-                // تعبئة العنوان
                 document.getElementById('modal-city').innerText = order.city;
                 document.getElementById('modal-area').innerText = order.area;
                 document.getElementById('modal-street').innerText = order.street;
                 document.getElementById('modal-building').innerText = order.building || 'N/A';
 
-                // تعبئة المبالغ
                 document.getElementById('modal-subtotal').innerText = parseFloat(order.subtotal).toFixed(2);
                 document.getElementById('modal-delivery').innerText = parseFloat(order.delivery_fee).toFixed(2);
                 document.getElementById('modal-total').innerText = parseFloat(order.total_amount).toFixed(2);
 
-                // تعبئة جدول المنتجات
                 const itemsBody = document.getElementById('modal-items-body');
                 itemsBody.innerHTML = '';
                 order.items.forEach(item => {
@@ -273,7 +267,6 @@
                     `;
                 });
 
-                // إظهار النافذة المنبثقة (Modal)
                 const modal = new bootstrap.Modal(document.getElementById('orderDetailsModal'));
                 modal.show();
             } else {
