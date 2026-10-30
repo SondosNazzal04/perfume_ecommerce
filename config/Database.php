@@ -17,16 +17,19 @@ class Database
             ]
         );
     }
+
     public function connect(): PDO
     {
         return $this->db;
     }
+
     public function run_query(string $query, array $param = [])
     {
         $stmt = $this->db->prepare($query);
         $stmt->execute($param);
         return $stmt;
     }
+
     public function beginTransaction()
     {
         return $this->db->beginTransaction();
