@@ -337,6 +337,43 @@ CREATE TABLE login_attempts (
     INDEX idx_attempt_key_time (attempt_key, attempted_at)
 );
 
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE TABLE cart_items;
+TRUNCATE TABLE order_items;
+TRUNCATE TABLE orders;
+TRUNCATE TABLE brands;
+TRUNCATE TABLE categories;
+TRUNCATE TABLE category_groups;
+TRUNCATE TABLE products;
+TRUNCATE TABLE product_variants;
+TRUNCATE TABLE users;
+SET FOREIGN_KEY_CHECKS = 1;
+
+ALTER TABLE users
+MODIFY COLUMN phone VARCHAR(20) NULL;
+
+INSERT INTO users (id, name, email, password, phone, role)
+VALUES (1, 'Test Customer', 'customer@test.com', '123456', '0791234567', 'customer');
+
+INSERT INTO brands (id, name, description, logo)
+VALUES (1, 'Dior', 'French luxury brand', 'dior.png');
+
+INSERT INTO category_groups (id, name, slug)
+VALUES (1, 'Perfumes', 'perfumes');
+
+INSERT INTO categories (id, group_id, name, slug)
+VALUES (1, 1, 'Men Perfumes', 'men-perfumes');
+
+INSERT INTO products (id, brand_id, name, slug, description)
+VALUES (1, 1, 'Sauvage', 'dior-sauvage', 'A fresh spicy fragrance');
+
+INSERT INTO product_variants (id, product_id, size_ml, price, stock)
+VALUES
+(1, 1, 50, 90.00, 30),
+(2, 1, 100, 120.00, 50);
+
+INSERT INTO product_categories (product_id, category_id)
+VALUES (1, 1);
 
 
 -- Table: payments (Stores payment details for each order)
@@ -349,4 +386,3 @@ CREATE TABLE payments (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
 );
-
