@@ -308,3 +308,10 @@ CREATE TABLE ai_recommendation_items (
     FOREIGN KEY (product_id)
         REFERENCES products(id)
 );
+
+ALTER TABLE reviews
+ADD COLUMN order_id INT UNSIGNED NOT NULL AFTER product_id,
+ADD CONSTRAINT fk_reviews_order_id FOREIGN KEY (order_id) REFERENCES orders(id);
+
+ALTER TABLE reviews
+ADD COLUMN is_active BOOLEAN DEFAULT 1 AFTER comment;
