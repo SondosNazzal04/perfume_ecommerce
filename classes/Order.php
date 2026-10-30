@@ -80,5 +80,87 @@ class Order {
             throw $e; // Throw the error back to the API to handle it
         }
     }
+
+
+
+        // 1. Get all orders (For Admin Dashboard)
+    public function getAllOrders() {
+        $sql = "SELECT o.*, u.name as customer_name 
+                FROM orders o
+                JOIN users u ON o.user_id = u.id
+                ORDER BY o.created_at DESC";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    // 2. Get details of a single order (Header + Items)
+    public function getOrderDetails($orderId) {
+        $sql = "SELECT o.*, u.name as customer_name, u.email 
+                FROM orders o
+                JOIN users u ON o.user_id = u.id
+                WHERE o.id = :order_id";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':order_id' => $orderId]);
+        $order = $stmt->fetch();
+
+        if ($order) {
+            $sqlItems = "SELECT oi.*, p.name as product_name, v.size_ml 
+                         FROM order_items oi
+                         JOIN product_variants v ON oi.variant_id = v.id
+                         JOIN products p ON v.product_id = p.id
+                         WHERE oi.order_id = :order_id";
+            $stmtItems = $this->pdo->prepare($sqlItems);
+            $stmtItems->execute([':order_id' => $orderId]);
+            $order['items'] = $stmtItems->fetchAll();
+        }
+        return $order;
+    }
+
+        public function updateOrderStatus($orderId, $status) {
+        $allowedStatuses = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
+        if (!in_array($status, $allowedStatuses)) {
+            return false; 
+        }
+
+        // If cancelling, return the stock first (using a transaction)
+        if ($status === 'cancelled') {
+            try {
+                $this->pdo->beginTransaction();
+
+                // 1. Get current order status to ensure it wasn't already cancelled
+                $stmtCheck = $this->pdo->prepare("SELECT status FROM orders WHERE id = :id");
+                $stmtCheck->execute([':id' => $orderId]);
+                $currentOrder = $stmtCheck->fetch();
+
+                if ($currentOrder && $currentOrder['status'] !== 'cancelled') {
+                    // 2. Get order items
+                    $stmtItems = $this->pdo->prepare("SELECT variant_id, quantity FROM order_items WHERE order_id = :id");
+                    $stmtItems->execute([':id' => $orderId]);
+                    $items = $stmtItems->fetchAll();
+
+                    // 3. Return stock
+                    foreach ($items as $item) {
+                        $stmtStock = $this->pdo->prepare("UPDATE product_variants SET stock = stock + :qty WHERE id = :v_id");
+                        $stmtStock->execute([':qty' => $item['quantity'], ':v_id' => $item['variant_id']]);
+                    }
+                }
+
+                // 4. Update the status
+                $stmtUpdate = $this->pdo->prepare("UPDATE orders SET status = :status WHERE id = :id");
+                $stmtUpdate->execute([':status' => $status, ':id' => $orderId]);
+
+                $this->pdo->commit();
+                return true;
+            } catch (Exception $e) {
+                $this->pdo->rollBack();
+                return false;
+            }
+        }
+
+        // Normal status update (processing, shipped, delivered)
+        $stmt = $this->pdo->prepare("UPDATE orders SET status = :status WHERE id = :order_id");
+        return $stmt->execute([':status' => $status, ':order_id' => $orderId]);
+    }
 }
 ?>
