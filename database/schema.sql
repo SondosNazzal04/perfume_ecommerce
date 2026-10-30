@@ -374,3 +374,15 @@ VALUES
 
 INSERT INTO product_categories (product_id, category_id)
 VALUES (1, 1);
+
+
+-- Table: payments (Stores payment details for each order)
+CREATE TABLE payments (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    order_id INT UNSIGNED NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    payment_method VARCHAR(50) NOT NULL,
+    status VARCHAR(50) DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
+);
