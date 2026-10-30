@@ -1,9 +1,11 @@
 <?php
 
-class Database {
+class Database
+{
     private $db;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->db = new PDO(
             "mysql:host=localhost;dbname=perfume_ecommerce;charset=utf8mb4",
             "root",
@@ -16,25 +18,30 @@ class Database {
         );
     }
 
-    public function connect(): PDO {
+    public function connect(): PDO
+    {
         return $this->db;
     }
 
-    public function run_query(string $query, array $param = []) {
+    public function run_query(string $query, array $param = [])
+    {
         $stmt = $this->db->prepare($query);
         $stmt->execute($param);
         return $stmt;
     }
 
-    public function beginTransaction() {
+    public function beginTransaction()
+    {
         return $this->db->beginTransaction();
     }
 
-    public function commit() {
+    public function commit()
+    {
         return $this->db->commit();
     }
 
-    public function rollBack() {
+    public function rollBack()
+    {
         if ($this->db->inTransaction()) {
             return $this->db->rollBack();
         }

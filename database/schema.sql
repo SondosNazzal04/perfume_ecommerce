@@ -13,28 +13,32 @@ CREATE TABLE users (
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NULL,
     google_id VARCHAR(255) NULL UNIQUE,
-    phone VARCHAR(20) NOT NULL,
+    phone VARCHAR(20) NULL,
     role ENUM('customer', 'admin') NOT NULL DEFAULT 'customer',
     email_verified_at DATETIME NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        ON UPDATE CURRENT_TIMESTAMP
+    ON UPDATE CURRENT_TIMESTAMP
 );
 
 
 -- 2. EMAIL VERIFICATIONS
-
 CREATE TABLE email_verifications (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    user_id INT UNSIGNED NOT NULL,
+    user_id INT UNSIGNED NOT NULL UNIQUE,
+
     otp_hash VARCHAR(255) NOT NULL,
     expires_at DATETIME NOT NULL,
-    attempts TINYINT UNSIGNED DEFAULT 0,
+    attempts TINYINT UNSIGNED NOT NULL DEFAULT 0,
+
+    otp_request_count TINYINT UNSIGNED NOT NULL DEFAULT 1,
+    otp_last_sent_at DATETIME NOT NULL,
+    otp_resend_locked_until DATETIME NULL DEFAULT NULL,
+
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
-
 
 -- 3. BRANDS
 
@@ -309,6 +313,29 @@ CREATE TABLE ai_recommendation_items (
         REFERENCES products(id)
 );
 
+-- 18. PASSWORD RESETS
+
+CREATE TABLE password_resets (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_id INT UNSIGNED NOT NULL,
+    token_hash CHAR(64) NOT NULL UNIQUE,
+    expires_at DATETIME NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE
+);
+
+-- 19. LOGIN ATTEMPTS
+
+CREATE TABLE login_attempts (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    attempt_key CHAR(64) NOT NULL,
+    attempted_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    INDEX idx_attempt_key_time (attempt_key, attempted_at)
+);
 
 SET FOREIGN_KEY_CHECKS = 0;
 TRUNCATE TABLE cart_items;
@@ -317,9 +344,7 @@ TRUNCATE TABLE orders;
 TRUNCATE TABLE brands;
 TRUNCATE TABLE categories;
 TRUNCATE TABLE category_groups;
-
 TRUNCATE TABLE products;
-
 TRUNCATE TABLE product_variants;
 TRUNCATE TABLE users;
 SET FOREIGN_KEY_CHECKS = 1;
@@ -327,24 +352,25 @@ SET FOREIGN_KEY_CHECKS = 1;
 ALTER TABLE users
 MODIFY COLUMN phone VARCHAR(20) NULL;
 
-INSERT INTO users (id, name, email, password, phone, role) 
+INSERT INTO users (id, name, email, password, phone, role)
 VALUES (1, 'Test Customer', 'customer@test.com', '123456', '0791234567', 'customer');
 
-INSERT INTO brands (id, name, description, logo) 
+INSERT INTO brands (id, name, description, logo)
 VALUES (1, 'Dior', 'French luxury brand', 'dior.png');
 
-INSERT INTO category_groups (id, name, slug) 
+INSERT INTO category_groups (id, name, slug)
 VALUES (1, 'Perfumes', 'perfumes');
 
-INSERT INTO categories (id, group_id, name, slug) 
+INSERT INTO categories (id, group_id, name, slug)
 VALUES (1, 1, 'Men Perfumes', 'men-perfumes');
 
-INSERT INTO products (id, brand_id, name, slug, description) 
+INSERT INTO products (id, brand_id, name, slug, description)
 VALUES (1, 1, 'Sauvage', 'dior-sauvage', 'A fresh spicy fragrance');
 
-INSERT INTO product_variants (id, product_id, size_ml, price, stock) 
-VALUES 
-(1, 1, 50, 90.00, 30),   
-(2, 1, 100, 120.00, 50); 
-INSERT INTO product_categories (product_id, category_id) 
+INSERT INTO product_variants (id, product_id, size_ml, price, stock)
+VALUES
+(1, 1, 50, 90.00, 30),
+(2, 1, 100, 120.00, 50);
+
+INSERT INTO product_categories (product_id, category_id)
 VALUES (1, 1);
