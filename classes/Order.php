@@ -160,6 +160,11 @@ class Order {
                 $stmtStock->execute([':qty' => $item['quantity'], ':v_id' => $item['variant_id']]);
             }
 
+            // Update Payment Status to Refunded
+            $stmtPayment = $this->pdo->prepare("UPDATE payments SET status = 'refunded' WHERE order_id = :order_id");
+            $stmtPayment->execute([':order_id' => $orderId]);
+
+
             // Soft Delete (Change Status)
             $stmtUpdate = $this->pdo->prepare("UPDATE orders SET status = 'cancelled' WHERE id = :id");
             $stmtUpdate->execute([':id' => $orderId]);
