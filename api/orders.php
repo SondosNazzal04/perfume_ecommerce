@@ -1,4 +1,5 @@
 <?php
+// File: api/orders.php
 
 require_once __DIR__ . '/../config/Database.php';
 require_once __DIR__ . '/../classes/Cart.php';
@@ -15,10 +16,10 @@ try {
     Response::json(500, ["success" => false, "message" => "Database error: " . $e->getMessage()]);
 }
 
-// Temporary user ID for testing (Will be $_SESSION['user_id'] later)
+// Temporary user ID for testing
 $userId = 1; 
-
 $method = $_SERVER["REQUEST_METHOD"];
+$id = isset($_GET["id"]) ? filter_var($_GET["id"], FILTER_VALIDATE_INT) : null;
 
 // Helper function to read JSON body
 function getJsonBody(): array {
@@ -32,18 +33,23 @@ function getJsonBody(): array {
 }
 
 try {
+    $orderModel = new Order($pdo);
+
     switch ($method) {
         // CREATE ORDER (CHECKOUT)
         case "POST":
             $body = getJsonBody();
 
-            // 1. Validate Address (Only address is received from the client)
+            // 1. Validate Address
             $addressData = [
                 'city' => trim($body["city"] ?? ""),
                 'area' => trim($body["area"] ?? ""),
                 'street' => trim($body["street"] ?? ""),
                 'building' => trim($body["building"] ?? "")
             ];
+
+            // Get Payment Method (Default to cash if not provided)
+            $paymentMethod = trim($body["payment_method"] ?? "cash");
 
             if (empty($addressData['city']) || empty($addressData['street'])) {
                 Response::json(422, ["success" => false, "message" => "City and Street are required."]);
@@ -60,15 +66,13 @@ try {
             // 3. Server-Side Calculation
             $subtotal = 0;
             foreach ($cartItems as $item) {
-                // Multiply the real price from the database by the quantity
                 $subtotal += ($item['price'] * $item['quantity']); 
             }
 
-            $deliveryFee = 5.00; // Can be made dynamic based on city later
-            $discountAmount = 0.00; // Will be updated when coupon logic is added
+            $deliveryFee = 5.00;
+            $discountAmount = 0.00;
             $totalAmount = $subtotal + $deliveryFee - $discountAmount;
 
-            // 4. Prepare Financial Data
             $financialData = [
                 'subtotal' => $subtotal,
                 'discount_amount' => $discountAmount,
@@ -76,11 +80,9 @@ try {
                 'total_amount' => $totalAmount
             ];
 
-            // 5. Create the Order
-            $orderModel = new Order($pdo);
-            $orderId = $orderModel->createOrder($userId, $addressData, $financialData, $cartItems);
+            // 4. Create the Order (Passing paymentMethod)
+            $orderId = $orderModel->createOrder($userId, $addressData, $financialData, $cartItems, $paymentMethod);
 
-            // 6. Return success response with the calculated total
             Response::json(201, [
                 "success" => true,
                 "message" => "Order created successfully.",
@@ -92,7 +94,7 @@ try {
         // GET ORDERS (For Customer)
         case "GET":
             $orderModel = new Order($pdo);
-            
+            $orderModel->autoConfirmOrders();
             // Fetch orders for the logged-in user
             $stmt = $pdo->prepare("SELECT * FROM orders WHERE user_id = :user_id ORDER BY created_at DESC");
             $stmt->execute([':user_id' => $userId]);
@@ -105,8 +107,30 @@ try {
             ]);
             break;
 
+        // CANCEL ORDER (For Customer)
+        case "PUT":
+            if ($id === null) {
+                Response::json(400, ["success" => false, "message" => "Order ID is required"]);
+            }
+
+            try {
+                // Pass 'false' for $isAdmin because this is the customer route
+                $orderModel->cancelOrder($id, false); 
+                
+                Response::json(200, [
+                    "success" => true,
+                    "message" => "Order cancelled successfully. Stock has been returned."
+                ]);
+            } catch (Exception $e) {
+                Response::json(400, [
+                    "success" => false,
+                    "message" => $e->getMessage()
+                ]);
+            }
+            break;
+
         default:
-            header("Allow: POST, GET");
+            header("Allow: POST, GET, PUT");
             Response::json(405, ["success" => false, "message" => "Method not allowed"]);
     }
 } catch (Throwable $e) {
