@@ -13,28 +13,32 @@ CREATE TABLE users (
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NULL,
     google_id VARCHAR(255) NULL UNIQUE,
-    phone VARCHAR(20) NOT NULL,
+    phone VARCHAR(20) NULL,
     role ENUM('customer', 'admin') NOT NULL DEFAULT 'customer',
     email_verified_at DATETIME NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        ON UPDATE CURRENT_TIMESTAMP
+    ON UPDATE CURRENT_TIMESTAMP
 );
 
 
 -- 2. EMAIL VERIFICATIONS
-
 CREATE TABLE email_verifications (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    user_id INT UNSIGNED NOT NULL,
+    user_id INT UNSIGNED NOT NULL UNIQUE,
+
     otp_hash VARCHAR(255) NOT NULL,
     expires_at DATETIME NOT NULL,
-    attempts TINYINT UNSIGNED DEFAULT 0,
+    attempts TINYINT UNSIGNED NOT NULL DEFAULT 0,
+
+    otp_request_count TINYINT UNSIGNED NOT NULL DEFAULT 1,
+    otp_last_sent_at DATETIME NOT NULL,
+    otp_resend_locked_until DATETIME NULL DEFAULT NULL,
+
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
-
 
 -- 3. BRANDS
 
@@ -307,4 +311,28 @@ CREATE TABLE ai_recommendation_items (
 
     FOREIGN KEY (product_id)
         REFERENCES products(id)
+);
+
+-- 18. PASSWORD RESETS
+
+CREATE TABLE password_resets (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_id INT UNSIGNED NOT NULL,
+    token_hash CHAR(64) NOT NULL UNIQUE,
+    expires_at DATETIME NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE
+);
+
+-- 19. LOGIN ATTEMPTS
+
+CREATE TABLE login_attempts (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    attempt_key CHAR(64) NOT NULL,
+    attempted_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    INDEX idx_attempt_key_time (attempt_key, attempted_at)
 );
