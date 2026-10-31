@@ -7,6 +7,14 @@ require_once __DIR__ . '/../core/Response.php';
 
 header("Content-Type: application/json; charset=UTF-8");
 
+
+//Check Authentication BEFORE connecting to the database
+session_start();
+if (!isset($_SESSION['user_id'])) {
+    Response::json(401, ["success" => false, "message" => "Unauthorized. Please login."]);
+    exit;
+}
+$userId = $_SESSION['user_id']; 
 // 1. Connect to the database
 try {
     $database = new Database();
@@ -21,8 +29,6 @@ try {
 // Initialize Cart model
 $cart = new Cart($pdo);
 
-// For testing purposes, we hardcode the user_id. Later, use $_SESSION['user_id']
-$userId = 1;
 
 // 2. Get HTTP Method and ID from URL
 $method = $_SERVER["REQUEST_METHOD"];

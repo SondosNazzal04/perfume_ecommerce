@@ -22,7 +22,6 @@ try {
 $brand = new Brand($pdo);
 
 $method = $_SERVER["REQUEST_METHOD"];
-$method = $_SERVER["REQUEST_METHOD"];
 
 switch ($method) {
 

@@ -4,4 +4,6 @@
 !/uploads/products/.gitkeep
 /config/mail.php
 /config/google.php
-
+/vendor/
+config/stripe.php
+config/mail.php
