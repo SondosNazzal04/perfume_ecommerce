@@ -32,15 +32,20 @@ class Order {
             // Get the newly created Order ID
             $orderId = $this->pdo->lastInsertId();
 
-            // 2. Insert into payments table
+             //Insert into payments table
+            // If Visa, it's completed immediately. If Cash, it's pending until delivery.
+            $initialPaymentStatus = ($paymentMethod === 'visa') ? 'completed' : 'pending';
+
             $sqlPayment = "INSERT INTO payments (order_id, amount, payment_method, status) 
-                           VALUES (:order_id, :amount, :payment_method, 'pending')";
+                           VALUES (:order_id, :amount, :payment_method, :status)";
             $stmtPayment = $this->pdo->prepare($sqlPayment);
             $stmtPayment->execute([
                 ':order_id' => $orderId,
                 ':amount' => $financialData['total_amount'],
-                ':payment_method' => $paymentMethod
+                ':payment_method' => $paymentMethod,
+                ':status' => $initialPaymentStatus
             ]);
+
 
 
             //  Move items to order_items & Deduct Stock
@@ -131,13 +136,16 @@ class Order {
         return $order;
     }
 
-     // Cancel Order (Returns stock and soft deletes)
-        public function cancelOrder($orderId, $isAdmin = false) {
+        // Cancel Order (Returns stock, handles payment, and soft deletes)
+    public function cancelOrder($orderId, $isAdmin = false) {
         try {
             $this->pdo->beginTransaction();
 
-            // Check current status
-            $stmt = $this->pdo->prepare("SELECT status FROM orders WHERE id = :id");
+            // Check current status AND payment method (using LEFT JOIN)
+            $stmt = $this->pdo->prepare("SELECT o.status, p.payment_method 
+                                         FROM orders o 
+                                         LEFT JOIN payments p ON o.id = p.order_id 
+                                         WHERE o.id = :id");
             $stmt->execute([':id' => $orderId]);
             $order = $stmt->fetch();
 
@@ -160,6 +168,14 @@ class Order {
                 $stmtStock->execute([':qty' => $item['quantity'], ':v_id' => $item['variant_id']]);
             }
 
+            // Update Payment Status based on method
+            if ($order['payment_method'] === 'visa') {
+                $stmtPayment = $this->pdo->prepare("UPDATE payments SET status = 'refunded' WHERE order_id = :order_id");
+            } else {
+                $stmtPayment = $this->pdo->prepare("UPDATE payments SET status = 'cancelled' WHERE order_id = :order_id");
+            }
+            $stmtPayment->execute([':order_id' => $orderId]);
+
             // Soft Delete (Change Status)
             $stmtUpdate = $this->pdo->prepare("UPDATE orders SET status = 'cancelled' WHERE id = :id");
             $stmtUpdate->execute([':id' => $orderId]);
@@ -172,26 +188,45 @@ class Order {
         }
     }
 
-    // 2. Update Order Status (Admin ONLY)
+        // Update Order Status (Admin ONLY)
     public function updateOrderStatus($orderId, $status) {
         // Admin can only change to delivered, or cancelled
-            $allowedStatuses = ['delivered', 'cancelled'];
+        $allowedStatuses = ['delivered', 'cancelled'];
 
         if (!in_array($status, $allowedStatuses)) {
             return false;
         }
 
-        // If admin cancels, use the cancelOrder logic to refund stock
+        // If admin cancels, use the cancelOrder logic to refund stock and payments
         if ($status === 'cancelled') {
             return $this->cancelOrder($orderId, true);
         }
 
+        // Check if the order is already cancelled (to prevent delivering a cancelled order)
+        $stmtCheck = $this->pdo->prepare("SELECT status FROM orders WHERE id = :id");
+        $stmtCheck->execute([':id' => $orderId]);
+        $currentOrder = $stmtCheck->fetch();
+
+        if ($currentOrder && $currentOrder['status'] === 'cancelled') {
+            throw new Exception("Cannot deliver a cancelled order.");
+        }
+
+        // Update order status to delivered
         $sql = "UPDATE orders SET status = :status WHERE id = :order_id";
         $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute([':status' => $status, ':order_id' => $orderId]);
+        $stmt->execute([':status' => $status, ':order_id' => $orderId]);
+
+        // If delivered, and it was Cash, mark payment as completed
+        if ($status === 'delivered') {
+            $stmtPayment = $this->pdo->prepare("UPDATE payments SET status = 'completed' WHERE order_id = :order_id AND payment_method = 'cash'");
+            $stmtPayment->execute([':order_id' => $orderId]);
+        }
+
+        return true;
     }
 
-    // 3. Auto Confirm Orders (6 Hours)
+    
+    // Auto Confirm Orders (6 Hours)
     public function autoConfirmOrders() {
         $sql = "UPDATE orders 
                 SET status = 'confirmed' 
