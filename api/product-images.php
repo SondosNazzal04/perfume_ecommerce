@@ -1,11 +1,30 @@
 <?php
 
+require_once __DIR__ . '/../includes/session.php';
 require_once __DIR__ . '/../config/Database.php';
 require_once __DIR__ . '/../classes/Product.php';
 require_once __DIR__ . '/../classes/ProductImage.php';
 require_once __DIR__ . '/../core/Response.php';
 
 header("Content-Type: application/json; charset=UTF-8");
+
+$method = $_SERVER["REQUEST_METHOD"];
+
+if (in_array($method, ['POST', 'PUT', 'DELETE'], true)) {
+    if (!isset($_SESSION['user_id'])) {
+        Response::json(401, [
+            'success' => false,
+            'message' => 'Unauthorized'
+        ]);
+    }
+
+    if (($_SESSION['user_role'] ?? '') !== 'admin') {
+        Response::json(403, [
+            'success' => false,
+            'message' => 'Access denied: admins only'
+        ]);
+    }
+}
 
 try {
     $database = new Database();
@@ -21,7 +40,6 @@ try {
 
 $product = new Product($pdo);
 $productImage = new ProductImage($pdo);
-$method = $_SERVER["REQUEST_METHOD"];
 
 try {
     switch ($method) {
@@ -84,7 +102,7 @@ try {
                 "data" => $images
             ]);
 
-        // POST: upload an image for a product
+        // POST: upload an image or add an image URL
         case "POST":
             $productId = filter_var(
                 $_POST["product_id"] ?? null,
@@ -107,8 +125,34 @@ try {
             }
 
             $hasUploadedFile = isset($_FILES["image"])
-                && ($_FILES["image"]["error"] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE;
-            $imageUrl = trim((string) ($_POST["image_url"] ?? ""));
+                && ($_FILES["image"]["error"] ?? UPLOAD_ERR_NO_FILE)
+                    !== UPLOAD_ERR_NO_FILE;
+
+            // This endpoint expects one image, not image[].
+            if (
+                $hasUploadedFile &&
+                (
+                    !is_int($_FILES["image"]["error"] ?? null) ||
+                    !is_string($_FILES["image"]["tmp_name"] ?? null) ||
+                    !is_int($_FILES["image"]["size"] ?? null)
+                )
+            ) {
+                Response::json(422, [
+                    "success" => false,
+                    "message" => "Upload one image file"
+                ]);
+            }
+
+            $imageUrl = $_POST["image_url"] ?? "";
+
+            if (!is_string($imageUrl)) {
+                Response::json(422, [
+                    "success" => false,
+                    "message" => "image_url must be a string"
+                ]);
+            }
+
+            $imageUrl = trim($imageUrl);
 
             if ($hasUploadedFile && $imageUrl !== "") {
                 Response::json(422, [
@@ -124,9 +168,8 @@ try {
                 ]);
             }
 
-            $isPrimaryRaw = $_POST["is_primary"] ?? "false";
             $isPrimary = filter_var(
-                $isPrimaryRaw,
+                $_POST["is_primary"] ?? "false",
                 FILTER_VALIDATE_BOOLEAN,
                 FILTER_NULL_ON_FAILURE
             );
@@ -141,13 +184,18 @@ try {
             $sortOrder = filter_var(
                 $_POST["sort_order"] ?? 0,
                 FILTER_VALIDATE_INT,
-                ["options" => ["min_range" => 0]]
+                [
+                    "options" => [
+                        "min_range" => 0,
+                        "max_range" => 4294967295
+                    ]
+                ]
             );
 
             if ($sortOrder === false) {
                 Response::json(422, [
                     "success" => false,
-                    "message" => "sort_order must be zero or greater"
+                    "message" => "sort_order must be an integer between 0 and 4294967295"
                 ]);
             }
 
@@ -173,7 +221,7 @@ try {
                 "data" => $productImage->getById($newId)
             ]);
 
-        // PUT: make an image the primary image for its product
+        // PUT: make an image the primary image
         case "PUT":
             $id = filter_var(
                 $_GET["id"] ?? null,
@@ -188,14 +236,12 @@ try {
                 ]);
             }
 
-            if ($productImage->getById($id) === null) {
+            if (!$productImage->setPrimary($id)) {
                 Response::json(404, [
                     "success" => false,
                     "message" => "Image not found"
                 ]);
             }
-
-            $productImage->setPrimary($id);
 
             Response::json(200, [
                 "success" => true,
@@ -218,19 +264,17 @@ try {
                 ]);
             }
 
-            $image = $productImage->getById($id);
+            $deleted = $productImage->deleteImage($id);
 
-            if ($image === null) {
+            if (!$deleted) {
                 Response::json(404, [
                     "success" => false,
                     "message" => "Image not found"
                 ]);
             }
 
-            $deleted = $productImage->deleteImage($id);
-
             Response::json(200, [
-                "success" => $deleted,
+                "success" => true,
                 "message" => "Product image deleted successfully"
             ]);
 

@@ -41,6 +41,7 @@ class Wishlist {
                 FROM wishlist w
                 JOIN products p ON w.product_id = p.id
                 WHERE w.user_id = :user_id
+                AND p.is_active = 1
                 ORDER BY w.created_at DESC';
         try {
             $stmt = $this->pdo->run_query($sql, ['user_id' => $userId]);

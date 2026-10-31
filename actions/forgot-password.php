@@ -54,10 +54,19 @@ $user = $userModel->findByEmail($email);
 $message = 'If this email is registered, a password reset link will be sent.';
 
 if ($user !== null && $user['email_verified_at'] !== null) {
+    try {
+        $token = $passwordReset->createToken((int) $user['id']);
+    } catch (Throwable $e) {
+        error_log('Password reset token creation failed: ' . $e->getMessage());
 
-    $token = $passwordReset->createToken((int) $user['id']);
+        Response::json(200, [
+            'success' => true,
+            'message' => $message
+        ]);
+    }
 
-   $resetLink = 'http://localhost/perfume_ecommerce/actions/reset-password.php?token=' . urlencode($token);
+    $resetLink = 'http://localhost/perfume_ecommerce/actions/reset-password.php?token='
+        . urlencode($token);
 
     $sent = $mailService->sendPasswordReset($email, $resetLink);
 

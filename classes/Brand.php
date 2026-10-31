@@ -45,9 +45,11 @@ class Brand
         $sql = "DELETE FROM brands WHERE id = :id";
         $stmt = $this->pdo->prepare($sql);
 
-        return $stmt->execute([
+        $stmt->execute([
             ':id' => $id
         ]);
+
+        return $stmt->rowCount() > 0;
     }
 
 

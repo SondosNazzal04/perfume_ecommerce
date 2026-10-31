@@ -2,9 +2,7 @@
 
 require_once __DIR__ . '/../includes/init.php';
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+$googleAuth = new GoogleAuth();
 
 $state = $_GET['state'] ?? '';
 $savedState = $_SESSION['google_oauth_state'] ?? '';

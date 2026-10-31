@@ -34,7 +34,10 @@ class PasswordReset
 
             return $token;
         } catch (Throwable $e) {
-            $this->db->rollBack();
+            if ($this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+
             throw $e;
         }
     }
@@ -90,7 +93,10 @@ class PasswordReset
 
             return true;
         } catch (Throwable $e) {
-            $this->db->rollBack();
+            if ($this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+
             throw $e;
         }
     }

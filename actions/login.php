@@ -68,7 +68,7 @@ if ($user === null) {
 $rateLimiter->clearAttempts($emailKey);
 session_regenerate_id(true);
 
-$_SESSION['user_id'] = $user['id'];
+$_SESSION['user_id'] = (int) $user['id'];
 $_SESSION['user_role'] = $user['role'];
 
 Response::json(200, [

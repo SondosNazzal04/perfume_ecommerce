@@ -1,18 +1,17 @@
 <?php
-session_start();
-// Check if the user is logged in
+
+require_once __DIR__ . '/../includes/session.php';
+
 if (!isset($_SESSION['user_id'])) {
-    // Redirect to login page (note the ../ because we are inside admin folder)
-    header("Location: ../login.php");
-    exit();
+    http_response_code(401);
+    exit('Please log in first.');
 }
 
-// Check if the logged-in user has the 'admin' role
-if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
-    // Redirect to store home page if they are just a normal customer
-    header("Location: ../index.php");
-    exit();
+if (($_SESSION['user_role'] ?? '') !== 'admin') {
+    http_response_code(403);
+    exit('Access denied: admins only.');
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

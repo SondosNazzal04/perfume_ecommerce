@@ -205,6 +205,26 @@ class ProductImage
             $findStmt = $this->pdo->prepare(
                 "SELECT product_id FROM product_images WHERE id = :id FOR UPDATE"
             );
+            $productStmt = $this->pdo->prepare(
+                "SELECT product_id FROM product_images WHERE id = ?"
+            );
+            $productStmt->execute([$id]);
+            $parentProductId = $productStmt->fetchColumn();
+
+            if ($parentProductId === false) {
+                $this->pdo->rollBack();
+                return false;
+            }
+
+            $productStmt = $this->pdo->prepare(
+                "SELECT id FROM products WHERE id = ? FOR UPDATE"
+            );
+            $productStmt->execute([$parentProductId]);
+
+            if ($productStmt->fetchColumn() === false) {
+                $this->pdo->rollBack();
+                return false;
+            }
             $findStmt->execute([':id' => $id]);
             $productId = $findStmt->fetchColumn();
 
@@ -250,6 +270,26 @@ class ProductImage
                  WHERE id = :id
                  FOR UPDATE"
             );
+            $productStmt = $this->pdo->prepare(
+                "SELECT product_id FROM product_images WHERE id = ?"
+            );
+            $productStmt->execute([$id]);
+            $parentProductId = $productStmt->fetchColumn();
+
+            if ($parentProductId === false) {
+                $this->pdo->rollBack();
+                return false;
+            }
+
+            $productStmt = $this->pdo->prepare(
+                "SELECT id FROM products WHERE id = ? FOR UPDATE"
+            );
+            $productStmt->execute([$parentProductId]);
+
+            if ($productStmt->fetchColumn() === false) {
+                $this->pdo->rollBack();
+                return false;
+            }
             $findStmt->execute([':id' => $id]);
             $image = $findStmt->fetch(PDO::FETCH_ASSOC);
 
@@ -266,10 +306,11 @@ class ProductImage
             if ((int) $image['is_primary'] === 1) {
                 $nextStmt = $this->pdo->prepare(
                     "SELECT id
-                     FROM product_images
-                     WHERE product_id = :product_id
-                     ORDER BY sort_order ASC, id ASC
-                     LIMIT 1"
+     FROM product_images
+     WHERE product_id = :product_id
+     ORDER BY sort_order ASC, id ASC
+     LIMIT 1
+     FOR UPDATE"
                 );
                 $nextStmt->execute([
                     ':product_id' => $image['product_id']

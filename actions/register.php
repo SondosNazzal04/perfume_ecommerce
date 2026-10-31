@@ -46,7 +46,20 @@ if ($name === '' || $email === '' || $password === '') {
     ]);
 }
 
-if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+if (
+    mb_strlen($name, 'UTF-8') > 100 ||
+    mb_strlen($phone, 'UTF-8') > 20
+) {
+    Response::json(422, [
+        'success' => false,
+        'message' => 'Name must not exceed 100 characters and phone 20 characters'
+    ]);
+}
+
+if (
+    mb_strlen($email, 'UTF-8') > 255 ||
+    !filter_var($email, FILTER_VALIDATE_EMAIL)
+) {
     Response::json(422, [
         'success' => false,
         'message' => 'Invalid email address'
@@ -60,28 +73,52 @@ if (strlen($password) < 8 || strlen($password) > 72) {
     ]);
 }
 
-$existingUser = $userModel->findByEmail($email);
+try {
+    $existingUser = $userModel->findByEmail($email);
 
-if ($existingUser !== null) {
-    Response::json(409, [
-        'success' => false,
-        'message' => 'Email is already registered'
-    ]);
-}
+    if ($existingUser !== null) {
+        Response::json(409, [
+            'success' => false,
+            'message' => 'Email is already registered'
+        ]);
+    }
 
-$userId = $userModel->register(
-    $name,
-    $email,
-    $password,
-    $phone
-);
+    $conn->beginTransaction();
 
-$otp = $emailVerification->createOtp($userId);
+    $userId = $userModel->register(
+        $name,
+        $email,
+        $password,
+        $phone
+    );
 
-if ($otp === false) {
+    $otp = $emailVerification->createOtp($userId);
+
+    if ($otp === false) {
+        throw new RuntimeException('Failed to create verification code');
+    }
+
+    $conn->commit();
+} catch (Throwable $e) {
+    if ($conn->inTransaction()) {
+        $conn->rollBack();
+    }
+
+    error_log('Registration failed: ' . $e->getMessage());
+
+    if (
+        $e instanceof PDOException &&
+        ($e->errorInfo[1] ?? null) == 1062
+    ) {
+        Response::json(409, [
+            'success' => false,
+            'message' => 'Email is already registered'
+        ]);
+    }
+
     Response::json(500, [
         'success' => false,
-        'message' => 'Failed to create verification code'
+        'message' => 'Registration failed. Please try again later.'
     ]);
 }
 

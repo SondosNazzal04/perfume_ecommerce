@@ -1,45 +1,65 @@
 <?php
+
+require_once __DIR__ . '/../../includes/session.php';
 require_once __DIR__ . '/../../config/Database.php';
 require_once __DIR__ . '/../../core/Response.php';
 require_once __DIR__ . '/../../classes/Wishlist.php';
 
-header("Content-Type: application/json; charset=UTF-8");
+if (!isset($_SESSION['user_id'])) {
+    Response::json(401, [
+        'success' => false,
+        'message' => 'Unauthorized'
+    ]);
+}
+
+if (($_SESSION['user_role'] ?? '') !== 'admin') {
+    Response::json(403, [
+        'success' => false,
+        'message' => 'Access denied: admins only'
+    ]);
+}
+
+if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+    header('Allow: GET');
+
+    Response::json(405, [
+        'success' => false,
+        'message' => 'Method not allowed'
+    ]);
+}
 
 try {
     $database = new Database();
-    $pdo = $database->connect();
 } catch (Throwable $e) {
-    Response::json(500, ["success" => false, "message" => "Database connection error"]);
-}
+    error_log('Admin wishlist database connection failed: ' . $e->getMessage());
 
-$wishlist = new Wishlist($database);
-$method = $_SERVER["REQUEST_METHOD"];
+    Response::json(500, [
+        'success' => false,
+        'message' => 'Database connection error'
+    ]);
+}
 
 try {
-    switch ($method) {
-        case 'GET':
-            // Later, add your admin authentication/JWT check here
+    $wishlist = new Wishlist($database);
+    $data = $wishlist->getAll();
 
-            $data = $wishlist->getAll();
-
-            // The frontend can count the total items by checking the length of $data
-            Response::json(200, [
-                "success" => true,
-                "total_count" => count($data),
-                "data" => $data
-            ]);
-            break;
-
-        default:
-            header("Allow: GET");
-            Response::json(405, ["success" => false, "message" => "Method not allowed"]);
-            break;
-    }
+    Response::json(200, [
+        'success' => true,
+        'total_count' => count($data),
+        'data' => $data
+    ]);
 } catch (PDOException $e) {
-    error_log($e->getMessage());
-    Response::json(500, ["success" => false, "message" => "A database error occurred"]);
+    error_log('Admin wishlist database error: ' . $e->getMessage());
+
+    Response::json(500, [
+        'success' => false,
+        'message' => 'A database error occurred'
+    ]);
 } catch (Throwable $e) {
-    error_log($e->getMessage());
-    Response::json(500, ["success" => false, "message" => "An internal server error occurred"]);
+    error_log('Admin wishlist error: ' . $e->getMessage());
+
+    Response::json(500, [
+        'success' => false,
+        'message' => 'An internal server error occurred'
+    ]);
 }
-?>

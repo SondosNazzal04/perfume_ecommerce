@@ -39,7 +39,16 @@ if (
     ]);
 }
 
-$success = $passwordReset->resetPassword($token, $newPassword);
+try {
+    $success = $passwordReset->resetPassword($token, $newPassword);
+} catch (Throwable $e) {
+    error_log('Password reset failed: ' . $e->getMessage());
+
+    Response::json(500, [
+        'success' => false,
+        'message' => 'Unable to reset password. Please try again later.'
+    ]);
+}
 
 if (!$success) {
     Response::json(400, [
