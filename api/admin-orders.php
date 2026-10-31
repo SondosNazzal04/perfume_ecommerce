@@ -63,7 +63,10 @@ try {
             $offset = ($page - 1) * $limit;
 
             // Build base query
-            $query = "FROM orders o JOIN users u ON o.user_id = u.id WHERE 1=1";
+            $query = "FROM orders o 
+            JOIN users u ON o.user_id = u.id 
+            LEFT JOIN payments p ON o.id = p.order_id 
+            WHERE 1=1";
             $params = [];
 
             // Add Search condition (by Customer Name or Order ID)
@@ -86,7 +89,7 @@ try {
             $totalPages = ceil($totalOrders / $limit);
 
             // Get Paginated Results
-            $sql = "SELECT o.*, u.name as customer_name " . $query . " ORDER BY o.created_at DESC LIMIT $limit OFFSET $offset";
+            $sql = "SELECT o.*, u.name as customer_name, p.payment_method " . $query . " ORDER BY o.created_at DESC LIMIT $limit OFFSET $offset";
             $stmt = $pdo->prepare($sql);
             $stmt->execute($params);
             $orders = $stmt->fetchAll();

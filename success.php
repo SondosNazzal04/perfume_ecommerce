@@ -11,6 +11,12 @@ require_once __DIR__ . '/vendor/autoload.php';
 $stripeConfig = require_once __DIR__ . '/config/stripe.php';
 \Stripe\Stripe::setApiKey($stripeConfig['secret_key']);
 
+// Security Check: Ensure user is logged in
+if (!isset($_SESSION['user_id'])) {
+    die("You must be logged in to view this page.");
+}
+$userId = $_SESSION['user_id'];
+
 // Connect to Database
 try {
     $database = new Database();
@@ -36,7 +42,6 @@ try {
 
     // 2. Extract the metadata we passed during Stripe Checkout creation
     $metadata = $session->metadata;
-    $userId = $metadata->user_id ?? 1; // Use 1 if not set for testing
     $paymentMethod = 'visa';
     
     $addressData = [
@@ -61,12 +66,11 @@ try {
         die("Cart is empty. Cannot create order.");
     }
 
-    // 4. Create the Order in our database
+    // 4. Create the Order in our database (This also clears the cart and reduces stock)
     $orderModel = new Order($pdo);
     $orderId = $orderModel->createOrder($userId, $addressData, $financialData, $cartItems, $paymentMethod);
 
-    // 5. Success! Redirect to My Orders (or show success message)
-    // We will just show a simple success message for now.
+    // 5. Success! Show message
     echo "
     <!DOCTYPE html>
     <html lang='en'>
@@ -74,13 +78,17 @@ try {
         <meta charset='UTF-8'>
         <title>Payment Successful</title>
         <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css' rel='stylesheet'>
+        <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'>
     </head>
     <body class='bg-light'>
         <div class='container mt-5 text-center'>
             <div class='card shadow-sm border-0 p-5 mx-auto' style='max-width: 500px;'>
                 <h1 class='text-success mb-3'><i class='fas fa-check-circle'></i> Payment Successful!</h1>
                 <p class='lead'>Thank you for your purchase. Your order #<strong>{$orderId}</strong> has been placed successfully.</p>
-                <a href='index.php' class='btn btn-primary mt-3'>Return to Store</a>
+                <div class='mt-4'>
+                    <a href='my-orders.php' class='btn btn-primary'>View My Orders</a>
+                    <a href='index.php' class='btn btn-outline-secondary'>Return to Store</a>
+                </div>
             </div>
         </div>
     </body>
@@ -88,6 +96,6 @@ try {
     ";
 
 } catch (Exception $e) {
-    echo "<h3>Error creating order: " . $e->getMessage() . "</h3>";
+    echo "<h3 class='text-danger text-center mt-5'>Error creating order: " . $e->getMessage() . "</h3>";
 }
 ?>
