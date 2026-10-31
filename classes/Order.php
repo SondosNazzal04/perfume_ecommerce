@@ -31,7 +31,7 @@ class Order {
 
             $orderId = $this->pdo->lastInsertId();
 
-            // 2. Insert into payments table
+             //Insert into payments table
             // If Visa, it's completed immediately. If Cash, it's pending until delivery.
             $initialPaymentStatus = ($paymentMethod === 'visa') ? 'completed' : 'pending';
 
@@ -45,7 +45,9 @@ class Order {
                 ':status' => $initialPaymentStatus
             ]);
 
-            // 3. Move items to order_items & Deduct Stock
+
+
+            //  Move items to order_items & Deduct Stock
             foreach ($cartItems as $item) {
                 $sqlUpdateStock = "UPDATE product_variants 
                                    SET stock = stock - :quantity 
@@ -126,6 +128,7 @@ class Order {
         return $order;
     }
 
+        // Cancel Order (Returns stock, handles payment, and soft deletes)
     public function cancelOrder($orderId, $isAdmin = false) {
         try {
             $this->pdo->beginTransaction();
@@ -213,18 +216,21 @@ class Order {
         }
     }
 
-    // 2. Update Order Status (Admin ONLY)
+        // Update Order Status (Admin ONLY)
     public function updateOrderStatus($orderId, $status) {
+        // Admin can only change to delivered, or cancelled
         $allowedStatuses = ['delivered', 'cancelled'];
 
         if (!in_array($status, $allowedStatuses)) {
             return false;
         }
 
+        // If admin cancels, use the cancelOrder logic to refund stock and payments
         if ($status === 'cancelled') {
             return $this->cancelOrder($orderId, true);
         }
 
+        // Check if the order is already cancelled (to prevent delivering a cancelled order)
         $stmtCheck = $this->pdo->prepare("SELECT status FROM orders WHERE id = :id");
         $stmtCheck->execute([':id' => $orderId]);
         $currentOrder = $stmtCheck->fetch();
@@ -247,7 +253,8 @@ class Order {
         return true;
     }
 
-    // 3. Auto Confirm Orders (6 Hours)
+    
+    // Auto Confirm Orders (6 Hours)
     public function autoConfirmOrders() {
         $sql = "UPDATE orders 
                 SET status = 'confirmed' 
