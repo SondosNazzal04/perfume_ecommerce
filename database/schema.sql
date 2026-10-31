@@ -313,6 +313,16 @@ CREATE TABLE ai_recommendation_items (
         REFERENCES products(id)
 );
 
+ALTER TABLE reviews
+ADD COLUMN order_id INT UNSIGNED NOT NULL AFTER product_id,
+ADD CONSTRAINT fk_reviews_order_id FOREIGN KEY (order_id) REFERENCES orders(id);
+
+ALTER TABLE reviews
+ADD COLUMN is_active BOOLEAN DEFAULT 1 AFTER comment;
+
+ALTER TABLE reviews
+ADD COLUMN order_id INT UNSIGNED NOT NULL AFTER product_id,
+ADD CONSTRAINT fk_reviews_order_id FOREIGN KEY (order_id) REFERENCES orders(id);
 -- 18. PASSWORD RESETS
 
 CREATE TABLE password_resets (
