@@ -29,7 +29,6 @@ class Order {
                 ':total_amount' => $financialData['total_amount']
             ]);
 
-            // Get the newly created Order ID
             $orderId = $this->pdo->lastInsertId();
 
              //Insert into payments table
@@ -50,8 +49,6 @@ class Order {
 
             //  Move items to order_items & Deduct Stock
             foreach ($cartItems as $item) {
-                
-                // A. Deduct stock (Only if stock is enough)
                 $sqlUpdateStock = "UPDATE product_variants 
                                    SET stock = stock - :quantity 
                                    WHERE id = :variant_id AND stock >= :quantity_check";
@@ -63,12 +60,10 @@ class Order {
                     ':quantity_check' => $item['quantity'] 
                 ]);
 
-                // If rowCount is 0, it means the condition (stock >= quantity) failed. Not enough stock!
                 if ($stmtUpdateStock->rowCount() === 0) {
                     throw new Exception("Not enough stock for this product. Please update your cart.");
                 }
 
-                // B. Insert into order_items (Invoice Details)
                 $sqlItem = "INSERT INTO order_items (order_id, variant_id, quantity, unit_price) 
                             VALUES (:order_id, :variant_id, :quantity, :unit_price)";
                 $stmtItem = $this->pdo->prepare($sqlItem);
@@ -76,35 +71,32 @@ class Order {
                     ':order_id' => $orderId,
                     ':variant_id' => $item['variant_id'],
                     ':quantity' => $item['quantity'],
-                    ':unit_price' => $item['price'] // From Cart model
+                    ':unit_price' => $item['price'] 
                 ]);
             }        
 
-            // Clear the user's cart
+            // 4. Clear the user's cart
             $stmtClear = $this->pdo->prepare("DELETE FROM cart_items WHERE user_id = :user_id");
             $stmtClear->execute([':user_id' => $userId]);
 
-            // 5. Commit the transaction (Save everything)
             $this->pdo->commit();
-
-            return $orderId; // Return the order ID for the response
+            return $orderId; 
 
         } catch (Exception $e) {
-            // If anything fails, rollback everything to prevent partial data
             $this->pdo->rollBack();
-            throw $e; // Throw the error back to the API to handle it
+            throw $e;
         }
     }
 
-
-
-        // Get all orders (For Admin Dashboard)
+   // Get all orders (For Admin Dashboard)
     public function getAllOrders() {
-                $this->autoConfirmOrders(); 
+        $this->autoConfirmOrders(); 
 
-        $sql = "SELECT o.*, u.name as customer_name 
+        // Added LEFT JOIN with payments to fetch the payment_method
+        $sql = "SELECT o.*, u.name as customer_name, p.payment_method 
                 FROM orders o
                 JOIN users u ON o.user_id = u.id
+                LEFT JOIN payments p ON o.id = p.order_id
                 ORDER BY o.created_at DESC";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
@@ -141,10 +133,11 @@ class Order {
         try {
             $this->pdo->beginTransaction();
 
-            // Check current status AND payment method (using LEFT JOIN)
-            $stmt = $this->pdo->prepare("SELECT o.status, p.payment_method 
+                        // Check current status, payment method, and get customer email
+            $stmt = $this->pdo->prepare("SELECT o.status, o.user_id, p.payment_method, u.email 
                                          FROM orders o 
                                          LEFT JOIN payments p ON o.id = p.order_id 
+                                         JOIN users u ON o.user_id = u.id
                                          WHERE o.id = :id");
             $stmt->execute([':id' => $orderId]);
             $order = $stmt->fetch();
@@ -179,6 +172,41 @@ class Order {
             // Soft Delete (Change Status)
             $stmtUpdate = $this->pdo->prepare("UPDATE orders SET status = 'cancelled' WHERE id = :id");
             $stmtUpdate->execute([':id' => $orderId]);
+
+             // Send email notification to the customer if the admin cancelled the order
+            if ($isAdmin) {
+                try {
+                    // Load Composer's autoloader and mail config
+                    require_once __DIR__ . '/../vendor/autoload.php';
+                    $mailConfig = require __DIR__ . '/../config/mail.php';
+
+                    // Initialize PHPMailer
+                    $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
+
+                    // Server settings
+                    $mail->isSMTP();
+                    $mail->Host       = $mailConfig['host'];
+                    $mail->SMTPAuth   = true;
+                    $mail->Username   = $mailConfig['username'];
+                    $mail->Password   = $mailConfig['password'];
+                    $mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
+                    $mail->Port       = $mailConfig['port'];
+
+                    // Recipients
+                    $mail->setFrom($mailConfig['from_email'], $mailConfig['from_name']);
+                    $mail->addAddress($order['email']); // Email fetched from the database
+
+                    // Content
+                    $mail->isHTML(true);
+                    $mail->Subject = 'Order Cancelled - Perfume Store';
+                    $mail->Body    = "Dear Customer,<br><br>Your order #<b>{$orderId}</b> has been cancelled by the administration.<br><br>If you have any questions, please contact support.<br><br>Best regards,<br>Perfume Store Team";
+
+                    $mail->send();
+                } catch (\Exception $e) {
+                    // Log error if email fails, but don't stop the order cancellation process
+                    error_log("Email could not be sent. Mailer Error: {$mail->ErrorInfo}");
+                }
+            }
 
             $this->pdo->commit();
             return true;
