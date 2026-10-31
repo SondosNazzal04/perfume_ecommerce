@@ -26,7 +26,8 @@ try {
     Response::json(500, ["success" => false, "message" => "Database error: " . $e->getMessage()]);
 }
 
- 
+// Temporary user ID for testing
+$userId = 1;
 $method = $_SERVER["REQUEST_METHOD"];
 $id = isset($_GET["id"]) ? filter_var($_GET["id"], FILTER_VALIDATE_INT) : null;
 
@@ -75,7 +76,7 @@ try {
             // 3. Server-Side Calculation
             $subtotal = 0;
             foreach ($cartItems as $item) {
-                $subtotal += ($item['price'] * $item['quantity']); 
+                $subtotal += ($item['price'] * $item['quantity']);
             }
 
             $deliveryFee = ($subtotal >= 100) ? 0.00 : 5.00; // Free delivery logic
@@ -89,6 +90,15 @@ try {
                 'total_amount' => $totalAmount
             ];
 
+            // 4. Create the Order (Passing paymentMethod)
+            $orderId = $orderModel->createOrder($userId, $addressData, $financialData, $cartItems, $paymentMethod);
+
+            Response::json(201, [
+                "success" => true,
+                "message" => "Order created successfully.",
+                "order_id" => $orderId,
+                "calculated_total" => $totalAmount
+            ]);
             // 4. Handle Payment Method
             if ($paymentMethod === 'visa') {
                 // STRIPE INTEGRATION
@@ -169,18 +179,40 @@ try {
             break;
         // GET ORDERS (For Customer)
         case "GET":
-            $orderModel = new Order($pdo);
-            $orderModel->autoConfirmOrders();
-            // Fetch orders for the logged-in user
-            $stmt = $pdo->prepare("SELECT * FROM orders WHERE user_id = :user_id ORDER BY created_at DESC");
-            $stmt->execute([':user_id' => $userId]);
-            $orders = $stmt->fetchAll();
+            // $orderModel = new Order($pdo);
+            // $orderModel->autoConfirmOrders();
+            // // Fetch orders for the logged-in user
+            // $stmt = $pdo->prepare("SELECT * FROM orders WHERE user_id = :user_id ORDER BY created_at DESC");
+            // $stmt->execute([':user_id' => $userId]);
+            // $orders = $stmt->fetchAll();
 
-            Response::json(200, [
-                "success" => true,
-                "count" => count($orders),
-                "data" => $orders
-            ]);
+            // Response::json(200, [
+            //     "success" => true,
+            //     "count" => count($orders),
+            //     "data" => $orders
+            // ]);
+            // break;
+
+            // GET ORDERS (For Customer: List or Tracking Details)
+            if ($id !== null) {
+                // Tracking Details (Single order + items)
+                $orderData = $orderModel->getCustomerOrderDetails($userId, $id);
+
+                if ($orderData) {
+                    Response::json(200, ["success" => true, "data" => $orderData]);
+                } else {
+                    Response::json(404, ["success" => false, "message" => "Order not found or unauthorized"]);
+                }
+            } else {
+                // My Orders (List summary)
+                $orders = $orderModel->getOrdersByUser($userId);
+
+                Response::json(200, [
+                    "success" => true,
+                    "count" => count($orders),
+                    "data" => $orders
+                ]);
+            }
             break;
 
         // CANCEL ORDER (For Customer)
@@ -191,8 +223,8 @@ try {
 
             try {
                 // Pass 'false' for $isAdmin because this is the customer route
-                $orderModel->cancelOrder($id, false); 
-                
+                $orderModel->cancelOrder($id, false);
+
                 Response::json(200, [
                     "success" => true,
                     "message" => "Order cancelled successfully. Stock has been returned."

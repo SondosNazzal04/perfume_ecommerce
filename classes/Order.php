@@ -13,9 +13,9 @@ class Order {
             $this->pdo->beginTransaction();
 
             // 1. Insert into orders table (Header/Invoice)
-            $sql = "INSERT INTO orders (user_id, city, area, street, building, subtotal, discount_amount, delivery_fee, total_amount, status) 
+            $sql = "INSERT INTO orders (user_id, city, area, street, building, subtotal, discount_amount, delivery_fee, total_amount, status)
                     VALUES (:user_id, :city, :area, :street, :building, :subtotal, :discount_amount, :delivery_fee, :total_amount, 'pending')";
-            
+
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute([
                 ':user_id' => $userId,
@@ -49,22 +49,25 @@ class Order {
 
             //  Move items to order_items & Deduct Stock
             foreach ($cartItems as $item) {
-                $sqlUpdateStock = "UPDATE product_variants 
-                                   SET stock = stock - :quantity 
+
+                // A. Deduct stock (Only if stock is enough)
+                $sqlUpdateStock = "UPDATE product_variants
+                                   SET stock = stock - :quantity
                                    WHERE id = :variant_id AND stock >= :quantity_check";
-                                   
+
                 $stmtUpdateStock = $this->pdo->prepare($sqlUpdateStock);
                 $stmtUpdateStock->execute([
                     ':quantity' => $item['quantity'],
                     ':variant_id' => $item['variant_id'],
-                    ':quantity_check' => $item['quantity'] 
+                    ':quantity_check' => $item['quantity']
                 ]);
 
                 if ($stmtUpdateStock->rowCount() === 0) {
                     throw new Exception("Not enough stock for this product. Please update your cart.");
                 }
 
-                $sqlItem = "INSERT INTO order_items (order_id, variant_id, quantity, unit_price) 
+                // B. Insert into order_items (Invoice Details)
+                $sqlItem = "INSERT INTO order_items (order_id, variant_id, quantity, unit_price)
                             VALUES (:order_id, :variant_id, :quantity, :unit_price)";
                 $stmtItem = $this->pdo->prepare($sqlItem);
                 $stmtItem->execute([
@@ -73,7 +76,7 @@ class Order {
                     ':quantity' => $item['quantity'],
                     ':unit_price' => $item['price'] 
                 ]);
-            }        
+            }
 
             // 4. Clear the user's cart
             $stmtClear = $this->pdo->prepare("DELETE FROM cart_items WHERE user_id = :user_id");
@@ -88,12 +91,50 @@ class Order {
         }
     }
 
-   // Get all orders (For Admin Dashboard)
-    public function getAllOrders() {
-        $this->autoConfirmOrders(); 
+    public function getOrdersByUser($userId) {
+        // Auto-confirm 6-hour old orders before fetching to show accurate statuses
+        $this->autoConfirmOrders();
 
-        // Added LEFT JOIN with payments to fetch the payment_method
-        $sql = "SELECT o.*, u.name as customer_name, p.payment_method 
+        $sql = "SELECT id, total_amount, status, created_at
+                FROM orders
+                WHERE user_id = :user_id
+                ORDER BY created_at DESC";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':user_id' => $userId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Customer API: Fetch specific order details WITH ownership verification
+    public function getCustomerOrderDetails($userId, $orderId) {
+        $this->autoConfirmOrders();
+
+        $sql = "SELECT id, city, area, street, building, subtotal, discount_amount, delivery_fee, total_amount, status, created_at
+                FROM orders
+                WHERE id = :order_id AND user_id = :user_id";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':order_id' => $orderId, ':user_id' => $userId]);
+        $order = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // If order doesn't exist OR belongs to someone else, this blocks access
+        if ($order) {
+            $sqlItems = "SELECT oi.quantity, oi.unit_price as price, p.name as product_name, v.size_ml
+                         FROM order_items oi
+                         JOIN product_variants v ON oi.variant_id = v.id
+                         JOIN products p ON v.product_id = p.id
+                         WHERE oi.order_id = :order_id";
+            $stmtItems = $this->pdo->prepare($sqlItems);
+            $stmtItems->execute([':order_id' => $orderId]);
+            $order['items'] = $stmtItems->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        return $order ?: null;
+    }
+
+        // Get all orders (For Admin Dashboard)
+    public function getAllOrders() {
+                $this->autoConfirmOrders();
+
+        $sql = "SELECT o.*, u.name as customer_name
                 FROM orders o
                 JOIN users u ON o.user_id = u.id
                 LEFT JOIN payments p ON o.id = p.order_id
@@ -105,9 +146,9 @@ class Order {
 
     // Get details of a single order (Header + Items)
     public function getOrderDetails($orderId) {
-                $this->autoConfirmOrders(); 
+                $this->autoConfirmOrders();
 
-        $sql = "SELECT o.*, u.name as customer_name, u.email 
+        $sql = "SELECT o.*, u.name as customer_name, u.email
                 FROM orders o
                 JOIN users u ON o.user_id = u.id
                 WHERE o.id = :order_id";
@@ -116,7 +157,7 @@ class Order {
         $order = $stmt->fetch();
 
         if ($order) {
-            $sqlItems = "SELECT oi.*, p.name as product_name, v.size_ml 
+            $sqlItems = "SELECT oi.*, p.name as product_name, v.size_ml
                          FROM order_items oi
                          JOIN product_variants v ON oi.variant_id = v.id
                          JOIN products p ON v.product_id = p.id
@@ -256,9 +297,9 @@ class Order {
     
     // Auto Confirm Orders (6 Hours)
     public function autoConfirmOrders() {
-        $sql = "UPDATE orders 
-                SET status = 'confirmed' 
-                WHERE status = 'pending' 
+        $sql = "UPDATE orders
+                SET status = 'confirmed'
+                WHERE status = 'pending'
                 AND created_at < NOW() - INTERVAL 6 HOUR";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
