@@ -44,7 +44,16 @@ if ($user === null) {
         'message' => 'Invalid email or OTP'
     ]);
 }
-$isVerified = $emailVerification->verifyOtp((int) $user['id'], $otp);
+try {
+    $isVerified = $emailVerification->verifyOtp((int) $user['id'], $otp);
+} catch (Throwable $e) {
+    error_log('OTP verification failed: ' . $e->getMessage());
+
+    Response::json(500, [
+        'success' => false,
+        'message' => 'Unable to verify email. Please try again later.'
+    ]);
+}
 
 if (!$isVerified) {
     Response::json(400, [

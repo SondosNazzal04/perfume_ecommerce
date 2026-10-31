@@ -67,13 +67,13 @@ class CategoryGroup
 
     public function deleteGroup(int $id): bool
     {
-        $sql = "DELETE FROM category_groups
-                WHERE id = :id";
+        $sql = "DELETE FROM category_groups WHERE id = :id";
 
         $stmt = $this->pdo->prepare($sql);
-
-        return $stmt->execute([
+        $stmt->execute([
             ':id' => $id
         ]);
+
+        return $stmt->rowCount() > 0;
     }
 }

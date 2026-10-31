@@ -1,10 +1,29 @@
 <?php
 
+require_once __DIR__ . '/../includes/session.php';
 require_once __DIR__ . '/../config/Database.php';
 require_once __DIR__ . '/../classes/CategoryGroup.php';
 require_once __DIR__ . '/../core/Response.php';
 
 header("Content-Type: application/json; charset=UTF-8");
+
+$method = $_SERVER["REQUEST_METHOD"];
+
+if (in_array($method, ['POST', 'PUT', 'DELETE'], true)) {
+    if (!isset($_SESSION['user_id'])) {
+        Response::json(401, [
+            'success' => false,
+            'message' => 'Unauthorized'
+        ]);
+    }
+
+    if (($_SESSION['user_role'] ?? '') !== 'admin') {
+        Response::json(403, [
+            'success' => false,
+            'message' => 'Access denied: admins only'
+        ]);
+    }
+}
 
 // Connect to the database
 try {
@@ -20,7 +39,6 @@ try {
 }
 
 $group = new CategoryGroup($pdo);
-$method = $_SERVER["REQUEST_METHOD"];
 
 // Read JSON request body
 function getJsonBody(): array
@@ -72,6 +90,16 @@ function validateGroupData(array $body): array
         ]);
     }
 
+    if (
+        mb_strlen($name, 'UTF-8') > 100 ||
+        mb_strlen($slug, 'UTF-8') > 120
+    ) {
+        Response::json(422, [
+            "success" => false,
+            "message" => "Name must not exceed 100 characters and slug 120 characters"
+        ]);
+    }
+
     return [
         "name" => $name,
         "slug" => $slug
@@ -80,7 +108,6 @@ function validateGroupData(array $body): array
 
 try {
     switch ($method) {
-        // GET: retrieve all groups or one group by ID
         case "GET":
             if (isset($_GET["id"])) {
                 $id = filter_var(
@@ -119,7 +146,6 @@ try {
                 "data" => $groups
             ]);
 
-        // POST: create a group
         case "POST":
             $body = getJsonBody();
             $data = validateGroupData($body);
@@ -134,7 +160,6 @@ try {
                 "message" => "Category group created successfully"
             ]);
 
-        // PUT: update a group
         case "PUT":
             $id = filter_var(
                 $_GET["id"] ?? null,
@@ -170,7 +195,6 @@ try {
                 "message" => "Category group updated successfully"
             ]);
 
-        // DELETE: delete a group
         case "DELETE":
             $id = filter_var(
                 $_GET["id"] ?? null,

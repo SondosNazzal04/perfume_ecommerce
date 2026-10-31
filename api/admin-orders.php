@@ -1,139 +1,284 @@
 <?php
 
-
+require_once __DIR__ . '/../includes/session.php';
 require_once __DIR__ . '/../config/Database.php';
 require_once __DIR__ . '/../classes/Order.php';
 require_once __DIR__ . '/../core/Response.php';
 
-header("Content-Type: application/json; charset=UTF-8");
-
-session_start();
-// Assuming your login system stores role in $_SESSION['role']
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-    Response::json(403, ["success" => false, "message" => "Access Denied: Admins only"]);
-    exit;
+if (!isset($_SESSION['user_id'])) {
+    Response::json(401, [
+        'success' => false,
+        'message' => 'Unauthorized'
+    ]);
 }
 
-// Connect to Database
+if (($_SESSION['user_role'] ?? '') !== 'admin') {
+    Response::json(403, [
+        'success' => false,
+        'message' => 'Access denied: admins only'
+    ]);
+}
+
+$method = $_SERVER['REQUEST_METHOD'];
+
+if (!in_array($method, ['GET', 'PUT'], true)) {
+    header('Allow: GET, PUT');
+
+    Response::json(405, [
+        'success' => false,
+        'message' => 'Method not allowed'
+    ]);
+}
+
+$id = isset($_GET['id'])
+    ? filter_var($_GET['id'], FILTER_VALIDATE_INT)
+    : null;
+
+if ($id !== null && ($id === false || $id <= 0)) {
+    Response::json(400, [
+        'success' => false,
+        'message' => 'Order ID must be a positive integer'
+    ]);
+}
+
 try {
     $database = new Database();
     $pdo = $database->connect();
 } catch (Throwable $e) {
-    Response::json(500, ["success" => false, "message" => "Database error: " . $e->getMessage()]);
-}
+    error_log('Admin orders connection failed: ' . $e->getMessage());
 
-$method = $_SERVER["REQUEST_METHOD"];
-$id = isset($_GET["id"]) ? filter_var($_GET["id"], FILTER_VALIDATE_INT) : null;
-
-// Helper function to read JSON body
-function getJsonBody(): array {
-    $rawBody = file_get_contents("php://input");
-    try {
-        $data = json_decode($rawBody, true, 512, JSON_THROW_ON_ERROR);
-    } catch (JsonException $e) {
-        Response::json(400, ["success" => false, "message" => "Invalid JSON body"]);
-    }
-    return is_array($data) ? $data : [];
+    Response::json(500, [
+        'success' => false,
+        'message' => 'Database connection error'
+    ]);
 }
 
 try {
     $orderModel = new Order($pdo);
 
     switch ($method) {
-        // GET: Retrieve all orders (With Search, Filter, Pagination) OR a single order
-        case "GET":
-            // 1. If requesting a single order details
+        case 'GET':
             if ($id !== null) {
                 $order = $orderModel->getOrderDetails($id);
-                if ($order) {
-                    Response::json(200, ["success" => true, "data" => $order]);
-                } else {
-                    Response::json(404, ["success" => false, "message" => "Order not found"]);
-                }
-                break;
-            }
 
-            // 2. Otherwise, get list with filters and pagination
-            $orderModel->autoConfirmOrders(); // Auto-confirm 6-hour pending orders
+                if (!$order) {
+                    Response::json(404, [
+                        'success' => false,
+                        'message' => 'Order not found'
+                    ]);
+                }
+
+                Response::json(200, [
+                    'success' => true,
+                    'data' => $order
+                ]);
+            }
 
             $search = $_GET['search'] ?? '';
             $status = $_GET['status'] ?? '';
-            $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-            $limit = 10; // Number of orders per page
+
+            if (!is_string($search) || !is_string($status)) {
+                Response::json(422, [
+                    'success' => false,
+                    'message' => 'Search and status must be strings'
+                ]);
+            }
+
+            $search = trim($search);
+            $status = trim($status);
+
+            $allowedStatuses = [
+                'pending',
+                'confirmed',
+                'processing',
+                'shipped',
+                'delivered',
+                'cancelled'
+            ];
+
+            if (
+                $status !== '' &&
+                !in_array($status, $allowedStatuses, true)
+            ) {
+                Response::json(422, [
+                    'success' => false,
+                    'message' => 'Invalid order status'
+                ]);
+            }
+
+            $page = isset($_GET['page'])
+                ? filter_var(
+                    $_GET['page'],
+                    FILTER_VALIDATE_INT,
+                    [
+                        'options' => [
+                            'min_range' => 1,
+                            'max_range' => intdiv(PHP_INT_MAX, 10)
+                        ]
+                    ]
+                )
+                : 1;
+
+            if ($page === false) {
+                Response::json(400, [
+                    'success' => false,
+                    'message' => 'Invalid page number'
+                ]);
+            }
+
+            $limit = 10;
             $offset = ($page - 1) * $limit;
 
-            // Build base query
-            $query = "FROM orders o 
-            JOIN users u ON o.user_id = u.id 
-            LEFT JOIN payments p ON o.id = p.order_id 
-            WHERE 1=1";
+            $orderModel->autoConfirmOrders();
+
+            $query = "
+                FROM orders o
+                JOIN users u ON o.user_id = u.id
+                LEFT JOIN payments p ON o.id = p.order_id
+                WHERE 1 = 1
+            ";
+
             $params = [];
 
-            // Add Search condition (by Customer Name or Order ID)
-            if (!empty($search)) {
-                $query .= " AND (u.name LIKE :search OR o.id = :order_id)";
-                $params[':search'] = "%$search%";
-                $params[':order_id'] = is_numeric($search) ? $search : 0;
+            if ($search !== '') {
+                $searchOrderId = filter_var(
+                    $search,
+                    FILTER_VALIDATE_INT,
+                    ['options' => ['min_range' => 1]]
+                );
+
+                $query .= " AND (
+                    u.name LIKE :search
+                    OR o.id = :order_id
+                )";
+
+                $params['search'] = '%' . $search . '%';
+                $params['order_id'] = $searchOrderId !== false
+                    ? $searchOrderId
+                    : 0;
             }
 
-            // Add Status Filter condition
-            if (!empty($status)) {
-                $query .= " AND o.status = :status";
-                $params[':status'] = $status;
+            if ($status !== '') {
+                $query .= ' AND o.status = :status';
+                $params['status'] = $status;
             }
 
-            // Get Total Count (for Pagination)
-            $countStmt = $pdo->prepare("SELECT COUNT(*) " . $query);
+            $countStmt = $pdo->prepare('SELECT COUNT(*) ' . $query);
             $countStmt->execute($params);
-            $totalOrders = $countStmt->fetchColumn();
-            $totalPages = ceil($totalOrders / $limit);
 
-            // Get Paginated Results
-            $sql = "SELECT o.*, u.name as customer_name, p.payment_method " . $query . " ORDER BY o.created_at DESC LIMIT $limit OFFSET $offset";
+            $totalOrders = (int) $countStmt->fetchColumn();
+            $totalPages = (int) ceil($totalOrders / $limit);
+
+            $sql = "
+                SELECT
+                    o.*,
+                    u.name AS customer_name,
+                    p.payment_method
+                " . $query . "
+                ORDER BY o.created_at DESC, o.id DESC
+                LIMIT $limit OFFSET $offset
+            ";
+
             $stmt = $pdo->prepare($sql);
             $stmt->execute($params);
-            $orders = $stmt->fetchAll();
 
             Response::json(200, [
-                "success" => true,
-                "data" => $orders,
-                "pagination" => [
-                    "total_orders" => $totalOrders,
-                    "total_pages" => $totalPages,
-                    "current_page" => $page
+                'success' => true,
+                'data' => $stmt->fetchAll(),
+                'pagination' => [
+                    'total_orders' => $totalOrders,
+                    'total_pages' => $totalPages,
+                    'current_page' => $page
                 ]
             ]);
-            break;
 
-        // PUT: Update order status
-        case "PUT":
+        case 'PUT':
             if ($id === null) {
-                Response::json(400, ["success" => false, "message" => "Order ID is required"]);
-            }
-            $body = getJsonBody();
-            $newStatus = trim($body["status"] ?? "");
-
-            if (empty($newStatus)) {
-                Response::json(422, ["success" => false, "message" => "Status is required"]);
+                Response::json(400, [
+                    'success' => false,
+                    'message' => 'Order ID is required'
+                ]);
             }
 
             try {
-                // Order model handles updating status, cancel logic, and stock refund
-                if ($orderModel->updateOrderStatus($id, $newStatus)) {
-                    Response::json(200, ["success" => true, "message" => "Order status updated to: " . $newStatus]);
-                } else {
-                    Response::json(400, ["success" => false, "message" => "Failed to update status. Ensure status is valid."]);
-                }
-            } catch (Exception $e) {
-                Response::json(400, ["success" => false, "message" => $e->getMessage()]);
+                $body = json_decode(
+                    file_get_contents('php://input'),
+                    true,
+                    512,
+                    JSON_THROW_ON_ERROR
+                );
+            } catch (JsonException $e) {
+                Response::json(400, [
+                    'success' => false,
+                    'message' => 'Invalid JSON body'
+                ]);
             }
-            break;
 
-        default:
-            header("Allow: GET, PUT");
-            Response::json(405, ["success" => false, "message" => "Method not allowed"]);
+            if (!is_array($body)) {
+                Response::json(400, [
+                    'success' => false,
+                    'message' => 'Invalid JSON body'
+                ]);
+            }
+
+            $newStatus = $body['status'] ?? '';
+
+            if (!is_string($newStatus)) {
+                Response::json(422, [
+                    'success' => false,
+                    'message' => 'Status must be a string'
+                ]);
+            }
+
+            $newStatus = trim($newStatus);
+
+            // Matches the current Order::updateOrderStatus() implementation.
+            if (!in_array($newStatus, ['delivered', 'cancelled'], true)) {
+                Response::json(422, [
+                    'success' => false,
+                    'message' => 'Status must be delivered or cancelled'
+                ]);
+            }
+
+            $order = $orderModel->getOrderDetails($id);
+
+            if (!$order) {
+                Response::json(404, [
+                    'success' => false,
+                    'message' => 'Order not found'
+                ]);
+            }
+
+            try {
+                $updated = $orderModel->updateOrderStatus($id, $newStatus);
+            } catch (PDOException $e) {
+                throw $e;
+            } catch (Exception $e) {
+                error_log('Order status update rejected: ' . $e->getMessage());
+
+                Response::json(400, [
+                    'success' => false,
+                    'message' => 'Unable to change the order status at this stage'
+                ]);
+            }
+
+            if (!$updated) {
+                Response::json(400, [
+                    'success' => false,
+                    'message' => 'Failed to update order status'
+                ]);
+            }
+
+            Response::json(200, [
+                'success' => true,
+                'message' => 'Order status updated to: ' . $newStatus
+            ]);
     }
 } catch (Throwable $e) {
-    Response::json(500, ["success" => false, "message" => "Server error: " . $e->getMessage()]);
+    error_log('Admin orders failed: ' . $e->getMessage());
+
+    Response::json(500, [
+        'success' => false,
+        'message' => 'An internal server error occurred'
+    ]);
 }
-?>

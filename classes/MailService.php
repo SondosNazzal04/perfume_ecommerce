@@ -95,4 +95,56 @@ class MailService
             return false;
         }
     }
+    public function sendOrderConfirmation(
+        string $email,
+        int $orderId,
+        string $amount
+    ): bool {
+        try {
+            $mail = new PHPMailer(true);
+            $mail->Timeout = 10;
+            $mail->CharSet = 'UTF-8';
+
+            $mail->isSMTP();
+            $mail->Host = $this->config['host'];
+            $mail->SMTPAuth = true;
+            $mail->Username = $this->config['username'];
+            $mail->Password = $this->config['password'];
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+            $mail->Port = $this->config['port'];
+
+            $mail->setFrom($this->config['username'], 'Perfume Store');
+            $mail->addAddress($email);
+
+            $safeAmount = htmlspecialchars(
+                $amount,
+                ENT_QUOTES,
+                'UTF-8'
+            );
+
+            $mail->isHTML(true);
+            $mail->Subject = "Payment Confirmation - Order #{$orderId}";
+
+            $mail->Body = "
+            <h2>Payment Received</h2>
+            <p>Thank you for your purchase!</p>
+            <p>Order number: <strong>#{$orderId}</strong></p>
+            <p>Amount paid: <strong>{$safeAmount} USD</strong></p>
+            <p>Your payment was completed successfully.</p>
+        ";
+
+            $mail->AltBody =
+                "Payment received for order #{$orderId}.\n"
+                . "Amount paid: {$amount} USD.\n"
+                . "Thank you for your purchase!";
+
+            return $mail->send();
+        } catch (Throwable $e) {
+            error_log(
+                'Order confirmation email failed: ' . $e->getMessage()
+            );
+
+            return false;
+        }
+    }
 }

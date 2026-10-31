@@ -21,10 +21,6 @@ class GoogleAuth
 
     public function getLoginUrl(): string
     {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-
         $state = bin2hex(random_bytes(32));
 
         $_SESSION['google_oauth_state'] = $state;

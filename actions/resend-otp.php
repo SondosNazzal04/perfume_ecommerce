@@ -49,7 +49,16 @@ if ($user['email_verified_at'] !== null) {
     ]);
 }
 
-$otp = $emailVerification->resendOtp((int) $user['id']);
+try {
+    $otp = $emailVerification->resendOtp((int) $user['id']);
+} catch (Throwable $e) {
+    error_log('OTP resend failed: ' . $e->getMessage());
+
+    Response::json(500, [
+        'success' => false,
+        'message' => 'Unable to resend verification code. Please try again later.'
+    ]);
+}
 
 if ($otp === false) {
     Response::json(429, [

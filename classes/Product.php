@@ -140,50 +140,60 @@ class Product
     }
 
     public function updateProduct(
-        int $id,
-        int $brandId,
-        string $name,
-        string $slug,
-        ?string $description = null,
-        bool $isActive = true,
-        array $categoryIds = []
-    ): bool {
-        $categoryIds = $this->normalizeCategoryIds($categoryIds);
+    int $id,
+    int $brandId,
+    string $name,
+    string $slug,
+    ?string $description = null,
+    bool $isActive = true,
+    array $categoryIds = []
+): bool {
+    $categoryIds = $this->normalizeCategoryIds($categoryIds);
 
-        $this->pdo->beginTransaction();
+    $this->pdo->beginTransaction();
 
-        try {
-            $sql = "UPDATE products
-                    SET brand_id = :brand_id,
-                        name = :name,
-                        slug = :slug,
-                        description = :description,
-                        is_active = :is_active
-                    WHERE id = :id";
+    try {
+        $checkStmt = $this->pdo->prepare(
+            "SELECT id FROM products WHERE id = ? FOR UPDATE"
+        );
+        $checkStmt->execute([$id]);
 
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->execute([
-                ':id' => $id,
-                ':brand_id' => $brandId,
-                ':name' => trim($name),
-                ':slug' => trim($slug),
-                ':description' => $description,
-                ':is_active' => $isActive ? 1 : 0
-            ]);
-
-            $this->syncCategories($id, $categoryIds);
-
-            $this->pdo->commit();
-
-            return true;
-        } catch (Throwable $e) {
-            if ($this->pdo->inTransaction()) {
-                $this->pdo->rollBack();
-            }
-
-            throw $e;
+        if ($checkStmt->fetchColumn() === false) {
+            $this->pdo->rollBack();
+            return false;
         }
+
+        $sql = "UPDATE products
+                SET brand_id = :brand_id,
+                    name = :name,
+                    slug = :slug,
+                    description = :description,
+                    is_active = :is_active
+                WHERE id = :id";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            ':id' => $id,
+            ':brand_id' => $brandId,
+            ':name' => trim($name),
+            ':slug' => trim($slug),
+            ':description' => $description,
+            ':is_active' => $isActive ? 1 : 0
+        ]);
+
+        $this->syncCategories($id, $categoryIds);
+
+        $this->pdo->commit();
+
+        return true;
+    } catch (Throwable $e) {
+        if ($this->pdo->inTransaction()) {
+            $this->pdo->rollBack();
+        }
+
+        throw $e;
     }
+}
 
     /**
      * @return array{deleted: bool, archived: bool, reason: string|null}
