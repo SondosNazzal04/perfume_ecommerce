@@ -6,7 +6,6 @@ class Review {
         $this->pdo = $db_connection;
     }
 
-    // You must run this before create() to prevent spoofed order IDs
     public function verifyOrderOwnership(int $userId, int $orderId, int $productId): bool {
         $sql = "SELECT 1
                 FROM orders o
@@ -43,6 +42,22 @@ class Review {
                 'comment' => $data['comment'] ?? null
             ]);
         } catch(PDOException $e) {
+            throw $e;
+        }
+    }
+
+    public function getByProductId(int $productId): array {
+        $sql = "SELECT r.id, r.rating, r.comment, r.created_at, u.name as user_name
+                FROM reviews r
+                JOIN users u ON r.user_id = u.id
+                WHERE r.product_id = :product_id
+                  AND r.is_active = 1
+                ORDER BY r.created_at DESC";
+
+        try {
+            $stmt = $this->pdo->run_query($sql, ['product_id' => $productId]);
+            return $stmt->fetchAll();
+        } catch (PDOException $e) {
             throw $e;
         }
     }
