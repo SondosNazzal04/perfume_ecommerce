@@ -1,0 +1,67 @@
+/* VELORA Administration — presentation only, leaves all permissions and APIs as-is. */
+:root{--admin-ink:#efe5d3;--admin-muted:#bdaf9b;--admin-line:rgba(212,175,117,.27);--admin-paper:#0c0b0a;--admin-white:#1a1712;--admin-soft:#262016;--admin-olive:#d4af75}
+.admin-body{font-family:'Jost','Segoe UI',sans-serif;font-size:15px;line-height:1.6}
+.admin-sidebar{width:260px;padding:31px 19px 21px}
+.admin-main-wrap{margin-left:260px}
+.admin-brand{font-size:28px;line-height:1.2;padding:0 11px 42px;letter-spacing:.15em}
+.admin-brand-mark{height:43px;width:43px;font-size:26px}
+.admin-brand small{font-size:10px;line-height:1.3;margin-top:7px}
+.admin-nav-label{font-size:12px;margin-bottom:15px}
+.admin-nav{gap:8px}
+.admin-nav a{font-size:15px;min-height:51px;padding:12px 15px;border-radius:8px;line-height:1.3}
+.admin-nav-icon{font-size:19px;min-width:22px}
+.admin-sidebar-bottom>a,.admin-signout{font-size:14px}
+.admin-version{font-size:10px}
+.admin-topbar{min-height:78px;height:auto;padding:16px clamp(22px,3vw,45px)}
+.admin-breadcrumb{font-size:15px}
+.admin-breadcrumb span{font-size:12px}
+.admin-user strong{font-size:14px}
+.admin-user small{font-size:12px}
+.admin-avatar{width:41px;height:41px;font-size:17px}
+.admin-main{max-width:1560px;padding:clamp(30px,3.5vw,52px) clamp(20px,3.8vw,54px) 85px}
+.admin-page-heading{margin-bottom:32px}
+.admin-page-heading h1{font-size:clamp(37px,4.6vw,60px)!important;line-height:1.1}
+.admin-page-heading p:not(.admin-eyebrow){font-size:15px!important;line-height:1.7;margin-top:12px}
+.admin-eyebrow{font-size:12px!important;letter-spacing:.17em}
+.admin-panel-heading h2,.admin-group-title{font-size:clamp(25px,2.6vw,34px)!important}
+.admin-panel-heading>a,.admin-panel-note{font-size:14px}
+.admin-button{font-family:'Jost',sans-serif;font-size:14px!important;min-height:44px;height:auto;padding:11px 17px;letter-spacing:.03em;border-radius:7px}
+.admin-stat-grid{gap:17px;margin-bottom:17px}
+.admin-stat-card{padding:23px 23px 20px;min-height:151px;border-radius:11px}
+.admin-stat-top{font-size:14px!important}
+.admin-stat-card>strong{font-size:35px!important;line-height:1.25}
+.admin-stat-card>small{font-size:13px!important;color:#bfb19a!important}
+.admin-stat-icon{min-width:36px;width:36px;height:36px;font-size:17px}
+.admin-mini-stat{padding:20px;min-height:97px}
+.admin-mini-stat>span{font-size:14px}
+.admin-mini-stat>strong{font-size:29px!important}
+.admin-mini-stat>a{font-size:13px;color:#e7c48b}
+.admin-panel{padding:clamp(19px,2.6vw,30px);margin-bottom:18px;border-radius:12px}
+.admin-dashboard-grid{gap:19px;margin-bottom:19px}
+.admin-recent-row{padding:17px 0}
+.admin-recent-row strong{font-size:14px}
+.admin-recent-row small,.admin-recent-row span{font-size:13px}
+.admin-chart-value,.admin-chart-date{font-size:12px;color:#b3a389}
+.admin-chart{height:230px;gap:12px}
+.admin-table-wrap{overflow-x:auto;border-radius:10px}
+.admin-table{font-size:14px;line-height:1.5}
+.admin-table th{font-size:13px!important;letter-spacing:.03em;padding:15px 14px!important;white-space:nowrap}
+.admin-table td{font-size:14px!important;padding:14px!important}
+.admin-toolbar{gap:12px}
+.admin-toolbar input,.admin-toolbar select,.admin-field input,.admin-field select,.admin-field textarea{font-size:15px!important;min-height:45px;padding:10px 13px!important;border-radius:7px!important}
+.admin-field label{font-size:14px!important;line-height:1.5}
+.admin-loading,.admin-empty,.admin-panel p,.admin-stock-row,.admin-low-stock{font-size:15px;line-height:1.7}
+.admin-status{font-size:13px!important;white-space:nowrap;padding:7px 11px}
+.admin-modal,.admin-confirm-modal{color:#efdfc8}
+.admin-modal h2,.admin-confirm-modal h2{font-size:28px}
+.admin-modal p,.admin-confirm-modal p{font-size:15px;line-height:1.7}
+.admin-status.pending{background:#3b2b12;color:#eac780;border-color:#9e742b}
+.admin-status.confirmed{background:#173323;color:#a8e2bb;border-color:#3d895a}
+.admin-status.processing{background:#1a2c3d;color:#c5dcf2;border-color:#587ca1}
+.admin-status.shipped{background:#2c2343;color:#d7c4f9;border-color:#7b66ac}
+.admin-status.delivered{background:#153322;color:#aeebc0;border-color:#458f5a}
+.admin-status.cancelled{background:#3d2020;color:#f3bebe;border-color:#a35b5b}
+.admin-body a:focus-visible,.admin-body button:focus-visible,.admin-body input:focus-visible,.admin-body select:focus-visible{outline:2px solid #eac68c;outline-offset:3px}
+@media(max-width:1150px){.admin-dashboard-grid{grid-template-columns:1fr}.admin-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-stat-grid-secondary{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:900px){.admin-sidebar{width:260px}.admin-main-wrap{margin-left:0}.admin-main{padding:30px 23px 60px}.admin-menu-toggle{display:block;color:#eacb98}}
+@media(max-width:620px){.admin-topbar{min-height:67px;padding:13px 15px}.admin-breadcrumb span,.admin-user>span:last-child{display:none}.admin-stat-grid,.admin-stat-grid-secondary{grid-template-columns:1fr}.admin-page-heading{flex-direction:column;align-items:flex-start}.admin-page-heading h1{font-size:40px!important}.admin-main{padding:24px 15px 50px}.admin-stat-card{min-height:132px}.admin-panel{padding:19px}.admin-table th,.admin-table td{padding:11px!important}.admin-button{font-size:13px!important}}

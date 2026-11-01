@@ -1,0 +1,24 @@
+{
+  "source_archive": "VELORA_LUXURY_POLISHED_WINDOWS.zip",
+  "output_archive": "VELORA_ADMIN_STUDIO_SAFE_UPDATE.zip",
+  "protected_files_count": 42323,
+  "sha256_mismatches": [],
+  "edited_files": [
+    "V/admin/coupons.php",
+    "V/admin/inventory.php",
+    "V/admin/products.php",
+    "V/assets/css/velora-admin-studio.css",
+    "V/assets/js/admin-panel.js",
+    "V/assets/js/admin-studio.js",
+    "V/docs/ADMIN_STUDIO_BACKEND_SHA256.json",
+    "V/docs/ADMIN_STUDIO_CHANGELOG_AR.md",
+    "V/docs/ADMIN_STUDIO_QA_AR.md",
+    "V/docs/GOOGLE_LOGIN_CALLBACK_FIX_AR.md",
+    "V/docs/OTP_EMAIL_BRANDING_HANDOFF_AR.md",
+    "V/docs/START_HERE_VELORA_ADMIN_AR.md",
+    "V/docs/VELORA_OTP_BRANDED_EMAIL_TEMPLATE.html",
+    "V/includes/admin-header.php",
+    "V/index.php"
+  ],
+  "no_database_files_modified": true
+}

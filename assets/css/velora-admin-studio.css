@@ -1,0 +1,1618 @@
+/* VELORA Management Studio. Visual enhancement only; original backend remains unmodified. */
+:root {
+    --studio-bg: #090807;
+    --studio-panel: #19150f;
+    --studio-panel-2: #201b14;
+    --studio-gold: #e2be83;
+    --studio-ink: #f1e8d9;
+    --studio-muted: #c4b49c;
+    --studio-border: rgba(226, 190, 131, .25)
+}
+
+.admin-body {
+    background: var(--studio-bg) !important;
+    color: var(--studio-ink);
+    font-size: 15px;
+    line-height: 1.65
+}
+
+.admin-sidebar {
+    background: linear-gradient(180deg, #161109 0%, #0c0a08 70%) !important;
+    border-right: 1px solid var(--studio-border) !important;
+    box-shadow: 8px 0 36px #0003
+}
+
+.admin-brand {
+    padding-bottom: 30px !important;
+    color: #f2e2c6 !important
+}
+
+.admin-brand-mark {
+    box-shadow: inset 0 0 0 1px #c19b6470, 0 0 25px #b9905930
+}
+
+.admin-nav-label {
+    font-size: 11px !important;
+    letter-spacing: .19em !important;
+    color: #d7b784 !important
+}
+
+.admin-nav a {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    min-height: 52px;
+    padding: 12px 14px !important;
+    color: #d0c2b0 !important;
+    font-size: 15px !important;
+    font-weight: 500 !important;
+    border: 1px solid transparent !important;
+    transition: background .16s, border-color .16s, color .16s
+}
+
+.admin-nav a:hover,
+.admin-nav a.active,
+.admin-nav a[aria-current=page] {
+    background: #332719 !important;
+    border-color: #b58c55a8 !important;
+    color: #f8ddb1 !important
+}
+
+.admin-nav a.active {
+    box-shadow: inset 3px 0 0 #dfbc85
+}
+
+.admin-nav-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 25px;
+    min-width: 25px;
+    color: #cfad77
+}
+
+.admin-nav-icon svg {
+    display: block;
+    width: 21px;
+    height: 21px;
+    flex: none
+}
+
+.admin-topbar {
+    background: #16110c !important;
+    min-height: 78px
+}
+
+.admin-breadcrumb strong {
+    color: #f2ddba !important
+}
+
+.admin-main {
+    padding-top: 35px
+}
+
+.admin-page-heading h1 {
+    color: #f4e5ce !important;
+    line-height: 1.05 !important
+}
+
+.admin-page-heading>div>p:not(.admin-eyebrow) {
+    font-size: 16px !important;
+    max-width: 740px;
+    color: #d4c5ae !important
+}
+
+.admin-stat-card,
+.admin-panel,
+.admin-mini-stat {
+    border-color: var(--studio-border) !important;
+    border-radius: 15px !important;
+    background: linear-gradient(145deg, #221a11, #17130f) !important
+}
+
+.admin-table-wrap {
+    border: 1px solid var(--studio-border) !important;
+    background: #15110d !important;
+    border-radius: 12px !important
+}
+
+.admin-table {
+    min-width: 700px;
+    color: var(--studio-ink);
+    font-size: 14px
+}
+
+.admin-table th {
+    color: #ebc690 !important;
+    background: #292016 !important;
+    font-size: 12px !important;
+    letter-spacing: .08em !important;
+    text-transform: uppercase
+}
+
+.admin-table td {
+    font-size: 14px !important;
+    padding: 16px 14px !important;
+    border-bottom: 1px solid #66503455 !important
+}
+
+.admin-table tbody tr,
+.admin-table tbody tr:nth-child(odd),
+.admin-table tbody tr:nth-child(even) {
+    background: #17130e !important
+}
+
+.admin-table tbody tr:hover {
+    background: #261d13 !important
+}
+
+.admin-table td strong {
+    font-size: 14px !important;
+    color: #f5e6ce !important
+}
+
+.admin-toolbar input,
+.admin-toolbar select,
+.admin-field input,
+.admin-field select,
+.admin-field textarea,
+.studio-toolbar input,
+.studio-toolbar select {
+    background: #100d0a !important;
+    color: #f0e2cc !important;
+    border: 1px solid #9e7847aa !important;
+    border-radius: 9px !important;
+    font: 500 15px/1.35 'Jost', Arial, sans-serif !important;
+    min-height: 47px;
+    padding: 11px 14px !important;
+    box-shadow: none !important
+}
+
+.admin-toolbar input::placeholder,
+.admin-field input::placeholder,
+.studio-toolbar input::placeholder {
+    color: #ac9b82 !important
+}
+
+.admin-toolbar input:focus,
+.admin-toolbar select:focus,
+.admin-field input:focus,
+.admin-field select:focus,
+.studio-toolbar input:focus,
+.studio-toolbar select:focus {
+    border-color: #f0c990 !important;
+    outline: 2px solid #e2be8380 !important;
+    outline-offset: 1px !important
+}
+
+.admin-field label,
+.studio-toolbar label {
+    display: grid;
+    gap: 8px;
+    color: #decaac !important;
+    font-size: 14px !important;
+    font-weight: 600
+}
+
+.admin-button,
+.admin-icon-button,
+.admin-pagination button {
+    font-size: 14px !important;
+    min-height: 44px;
+    line-height: 1.35
+}
+
+.admin-button-dark {
+    background: linear-gradient(120deg, #f0cd91, #c79a59) !important;
+    color: #211509 !important;
+    border: 1px solid #d2aa72 !important
+}
+
+.admin-button-dark:hover {
+    filter: brightness(1.09)
+}
+
+.admin-button-soft,
+.admin-icon-button {
+    background: #2b2115 !important;
+    color: #f4d29d !important;
+    border: 1px solid #ad8650aa !important
+}
+
+.admin-button-soft:hover,
+.admin-icon-button:hover {
+    background: #423019 !important
+}
+
+.admin-button:disabled,
+.admin-icon-button:disabled {
+    opacity: .5;
+    cursor: not-allowed
+}
+
+.admin-panel-heading h2,
+.admin-modal h2 {
+    color: #f4e4cf !important
+}
+
+.admin-modal,
+.admin-confirm-modal {
+    background: #19140f !important;
+    border: 1px solid #a8865777 !important
+}
+
+.admin-modal-header,
+.admin-modal-body {
+    background: #1b160f !important
+}
+
+.admin-confirm-modal .admin-modal-body p {
+    color: #e2d1ba !important;
+    font-size: 15px !important
+}
+
+.admin-toast {
+    font-size: 14px !important
+}
+
+.admin-pagination {
+    gap: 14px;
+    flex-wrap: wrap
+}
+
+.admin-pagination button {
+    color: #e6c494 !important
+}
+
+.admin-status {
+    font-size: 12px !important;
+    font-weight: 700;
+    letter-spacing: .02em
+}
+
+.admin-status.pending {
+    background: #382912 !important;
+    color: #f3d68a !important;
+    border-color: #a37c36 !important
+}
+
+.admin-status.delivered {
+    background: #193827 !important;
+    color: #b2ebbf !important;
+    border-color: #579367 !important
+}
+
+.admin-status.cancelled {
+    background: #40201d !important;
+    color: #ffc5bb !important;
+    border-color: #ad6158 !important
+}
+
+.admin-user {
+    gap: 12px
+}
+
+.admin-user strong {
+    font-size: 15px !important
+}
+
+.admin-user small {
+    font-size: 12px !important
+}
+
+.admin-body :is(a, button, input, select, textarea):focus-visible {
+    outline: 2px solid #ffd7a0 !important;
+    outline-offset: 3px !important
+}
+
+.admin-subline,
+.studio-subline {
+    display: block;
+    color: #b8a68b;
+    font-size: 12px;
+    line-height: 1.55;
+    margin-top: 4px
+}
+
+.admin-empty,
+.admin-loading {
+    font-size: 15px !important;
+    color: #cebea6 !important;
+    padding: 22px
+}
+
+.studio-selection {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+    background: #201a12;
+    border: 1px solid #98734280;
+    border-radius: 12px;
+    padding: 15px 17px;
+    margin: 17px 0
+}
+
+.studio-selection-title {
+    display: flex;
+    flex-direction: column;
+    gap: 3px
+}
+
+.studio-selection-title strong {
+    color: #eed0a3;
+    font-size: 16px
+}
+
+.studio-selection-title span {
+    font-size: 12px;
+    color: #baaa92
+}
+
+.studio-selection-controls {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    flex-wrap: wrap
+}
+
+.studio-selection select {
+    min-height: 44px;
+    padding: 10px 12px;
+    border-radius: 7px;
+    border: 1px solid #a48252;
+    background: #110e09;
+    color: #f0ddbe;
+    font-size: 14px
+}
+
+.studio-check-col {
+    width: 46px;
+    min-width: 46px;
+    text-align: center
+}
+
+.studio-check-col input {
+    width: 18px;
+    height: 18px;
+    accent-color: #d9b778;
+    cursor: pointer
+}
+
+.studio-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 14px;
+    margin: 22px 0
+}
+
+.studio-toolbar label:first-child {
+    flex: 1;
+    min-width: 250px
+}
+
+.studio-toolbar label:nth-child(2) {
+    min-width: 215px
+}
+
+.studio-note {
+    color: #bbaa8f;
+    font-size: 14px;
+    margin: 12px 0 23px;
+    line-height: 1.7
+}
+
+.studio-variants {
+    display: grid;
+    gap: 9px;
+    padding: 6px
+}
+
+.studio-detail-row td {
+    background: #241c12 !important;
+    padding: 12px !important
+}
+
+.studio-variant-card {
+    display: grid;
+    grid-template-columns: 70px 110px 100px minmax(135px, 1fr) auto;
+    align-items: center;
+    gap: 15px;
+    padding: 13px 14px;
+    border-radius: 9px;
+    border: 1px solid #a07c4b77;
+    background: #16120e
+}
+
+.studio-size {
+    font-size: 17px;
+    color: #f2cc91;
+    font-weight: 700
+}
+
+.studio-variant-price {
+    color: #d9c5a7;
+    font-size: 14px
+}
+
+.studio-variant-card label {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: #e7d1ae;
+    font-size: 14px
+}
+
+.studio-variant-card input {
+    max-width: 100px;
+    min-height: 41px;
+    padding: 7px 9px;
+    background: #100c09;
+    color: #f2e1c7;
+    border: 1px solid #a48252;
+    border-radius: 8px;
+    font-size: 15px
+}
+
+.studio-variant-message {
+    grid-column: 1/-1;
+    color: #dbbf93;
+    font-size: 13px
+}
+
+.studio-stale {
+    box-shadow: inset 3px 0 #e8b770
+}
+
+.studio-stale td:nth-child(2)::after {
+    content: ' · refresh to recalculate';
+    font-size: 11px;
+    color: #dec28e
+}
+
+.studio-coupon-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(290px, .8fr);
+    gap: 22px;
+    align-items: start
+}
+
+.studio-coupon-form {
+    display: grid;
+    gap: 22px;
+    margin-top: 22px
+}
+
+.studio-form-pair {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px
+}
+
+.studio-coupon-form label,
+.studio-check-label {
+    font-size: 14px !important
+}
+
+.studio-check-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #e8d4b3
+}
+
+.studio-check-label input {
+    width: 18px;
+    height: 18px;
+    accent-color: #d5af76
+}
+
+.studio-coupon-guide h2 {
+    font: 500 35px/1.1 'Cormorant Garamond', Georgia, serif;
+    color: #f2e2c9
+}
+
+.studio-coupon-guide p {
+    font-size: 15px;
+    line-height: 1.8;
+    color: #d4c2a7;
+    margin: 14px 0
+}
+
+.studio-coupon-guide code {
+    color: #f5d19c;
+    overflow-wrap: anywhere
+}
+
+.studio-coupon-result {
+    margin-top: 18px;
+    background: #1b3827;
+    border: 1px solid #63986b;
+    padding: 17px;
+    border-radius: 10px;
+    color: #c5e6bf;
+    font-size: 14px
+}
+
+
+/* VELORA Admin Sidebar - Scroll Fix */
+
+.admin-sidebar {
+    overflow-y: auto !important;
+    overflow-x: hidden;
+    overscroll-behavior-y: contain;
+
+    scrollbar-width: thin;
+    scrollbar-color: #C9A46B #161109;
+}
+
+/* Chrome / Edge scrollbar styling */
+.admin-sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.admin-sidebar::-webkit-scrollbar-track {
+    background: #161109;
+}
+
+.admin-sidebar::-webkit-scrollbar-thumb {
+    background: #C9A46B;
+    border-radius: 10px;
+}
+
+.admin-sidebar::-webkit-scrollbar-thumb:hover {
+    background: #E7C58D;
+}
+
+/* ========================================
+   VELORA ADMIN - FIX 01
+   Categories & Fragrance Houses
+======================================== */
+
+/* Category and brand cards */
+
+.admin-category-card {
+    background: linear-gradient(145deg,
+            #211a13,
+            #15110d) !important;
+
+    border: 1px solid #614a2f !important;
+    border-radius: 12px !important;
+    padding: 18px !important;
+
+    color: #f2e6d4 !important;
+
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease;
+}
+
+.admin-category-card:hover {
+    border-color: #c9a46b !important;
+    background: #292016 !important;
+}
+
+/* Category and brand titles */
+
+.admin-category-card strong {
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    color: #f2e6d4 !important;
+    line-height: 1.5;
+}
+
+.admin-category-card small {
+    font-size: 12px !important;
+    color: #bca98d !important;
+    line-height: 1.6;
+}
+
+/* Brand initials */
+
+.admin-brand-monogram {
+    background: #302416 !important;
+    color: #e5bd80 !important;
+
+    border: 1px solid #947148;
+    width: 48px;
+    height: 48px;
+
+    font-size: 21px !important;
+    border-radius: 50%;
+}
+
+/* Add category group form */
+
+.admin-inline-form {
+    background: #201912 !important;
+    border: 1px solid #614a2f !important;
+
+    border-radius: 12px !important;
+    padding: 20px !important;
+}
+
+/* Group list */
+
+.admin-group-row {
+    padding: 14px 0 !important;
+    border-bottom: 1px solid #493823 !important;
+}
+
+.admin-group-row strong {
+    font-size: 14px !important;
+    color: #f1e2ca !important;
+}
+
+.admin-group-row small {
+    font-size: 12px !important;
+    color: #baa78d !important;
+}
+
+/* Better responsive card layout */
+
+.admin-category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,
+            minmax(min(100%, 260px), 1fr));
+
+    gap: 16px;
+}
+
+/* =========================================
+   VELORA ADMIN - FIX 02
+   Luxury Reviews Page
+========================================= */
+
+/* Reviews cards layout */
+.admin-review-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px !important;
+}
+
+/* Review card */
+.admin-review-card {
+    background: linear-gradient(145deg,
+            #241c14 0%,
+            #15110d 100%) !important;
+
+    border: 1px solid #705636 !important;
+    border-radius: 16px !important;
+    padding: 24px !important;
+
+    color: #f3e7d5 !important;
+    min-width: 0;
+
+    transition: border-color 0.2s ease;
+}
+
+.admin-review-card:hover {
+    border-color: #d4af75 !important;
+}
+
+/* Keep hidden reviews readable */
+.admin-review-card.inactive {
+    opacity: 1 !important;
+    border-style: dashed !important;
+}
+
+/* Stars and status */
+.admin-review-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    margin-bottom: 18px;
+}
+
+.admin-review-stars {
+    color: #e9bf7e !important;
+    font-size: 21px !important;
+    letter-spacing: 3px !important;
+    line-height: 1.4;
+}
+
+/* Customer review text */
+.admin-review-card>p {
+    color: #eadfce !important;
+    font-size: 15px !important;
+    line-height: 1.8 !important;
+    min-height: 0 !important;
+    overflow-wrap: anywhere;
+
+    margin: 0 0 20px;
+}
+
+/* Customer and product information */
+.admin-review-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    border-top: 1px solid #59452e !important;
+    padding-top: 16px !important;
+
+    font-size: 13px !important;
+    line-height: 1.7 !important;
+    color: #c5b39a !important;
+}
+
+.admin-review-meta strong {
+    color: #f0d7ae !important;
+    font-size: 14px !important;
+}
+
+.admin-review-meta a {
+    color: #eac28a !important;
+    text-decoration: none !important;
+    overflow-wrap: anywhere;
+}
+
+.admin-review-meta a:hover {
+    text-decoration: underline !important;
+}
+
+.admin-review-meta time {
+    color: #ad9a80 !important;
+    font-size: 12px !important;
+    margin-left: auto;
+}
+
+/* Hide review action */
+.admin-review-card>.admin-icon-button {
+    margin-top: 18px !important;
+    padding: 11px 17px !important;
+    border-radius: 8px !important;
+}
+
+/* Tablet and mobile */
+@media (max-width: 1100px) {
+    .admin-review-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+@media (max-width: 600px) {
+    .admin-review-card {
+        padding: 18px !important;
+    }
+
+    .admin-review-card>p {
+        font-size: 14px !important;
+    }
+
+    .admin-review-meta time {
+        flex-basis: 100%;
+        margin-left: 0;
+    }
+}
+
+
+
+/* =========================================
+   VELORA ADMIN - FIX 03
+   Premium Overview Dashboard
+   Visual changes only
+========================================= */
+
+/* Page heading */
+.admin-main:has([data-dashboard-error]) .admin-page-heading {
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+}
+
+.admin-main:has([data-dashboard-error]) .admin-page-heading h1 {
+    font-size: clamp(34px, 3.5vw, 48px) !important;
+    line-height: 1.15 !important;
+}
+
+.admin-main:has([data-dashboard-error]) .admin-eyebrow {
+    color: #d8b47a !important;
+    font-size: 12px !important;
+    letter-spacing: 0.15em;
+}
+
+/* Main statistics layout */
+.admin-main:has([data-dashboard-error]) .admin-stat-grid {
+    gap: 18px !important;
+    margin-bottom: 18px !important;
+}
+
+.admin-main:has([data-dashboard-error]) .admin-stat-card {
+    min-width: 0;
+    min-height: 164px !important;
+    padding: 23px !important;
+
+    background: linear-gradient(145deg,
+            #241c13,
+            #15110d) !important;
+
+    border: 1px solid #6e5536 !important;
+    border-top: 2px solid #c8a16a !important;
+    border-radius: 16px !important;
+
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+}
+
+/* Revenue card */
+.admin-main:has([data-dashboard-error]) .admin-stat-revenue {
+    background: linear-gradient(135deg,
+            #45321e,
+            #1c160e) !important;
+
+    border-color: #b38d58 !important;
+}
+
+/* Statistic labels */
+.admin-main:has([data-dashboard-error]) .admin-stat-top {
+    color: #e4cfb1 !important;
+    font-size: 14px !important;
+    font-weight: 600;
+}
+
+.admin-main:has([data-dashboard-error]) .admin-stat-card>strong {
+    display: block;
+    color: #f4ddba !important;
+
+    font-size: clamp(29px, 3vw, 40px) !important;
+    line-height: 1.2 !important;
+    font-weight: 600;
+
+    margin: 16px 0 9px !important;
+    overflow-wrap: anywhere;
+}
+
+.admin-main:has([data-dashboard-error]) .admin-stat-card>small {
+    color: #c4b39b !important;
+    font-size: 13px !important;
+    line-height: 1.6;
+}
+
+/* Statistic icons */
+.admin-main:has([data-dashboard-error]) .admin-stat-icon {
+    width: 42px !important;
+    height: 42px !important;
+
+    background: #3a2c1c !important;
+    color: #ebc68e !important;
+
+    border: 1px solid #85633c;
+    border-radius: 12px !important;
+
+    font-size: 17px !important;
+}
+
+/* Secondary statistics */
+.admin-main:has([data-dashboard-error]) .admin-mini-stat {
+    min-width: 0;
+    min-height: 115px !important;
+    padding: 20px !important;
+
+    background: #1d1711 !important;
+    border: 1px solid #675034 !important;
+    border-radius: 14px !important;
+}
+
+.admin-main:has([data-dashboard-error]) .admin-mini-stat>span {
+    color: #d2b993 !important;
+    font-size: 14px !important;
+}
+
+.admin-main:has([data-dashboard-error]) .admin-mini-stat>strong {
+    color: #f1cc92 !important;
+    font-size: 30px !important;
+}
+
+.admin-main:has([data-dashboard-error]) .admin-mini-stat>a {
+    color: #e9bd81 !important;
+    font-size: 13px !important;
+}
+
+/* Dashboard content panels */
+.admin-main:has([data-dashboard-error]) .admin-dashboard-grid {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: 20px !important;
+    margin-bottom: 20px !important;
+}
+
+.admin-main:has([data-dashboard-error]) .admin-panel {
+    min-width: 0;
+    padding: 26px !important;
+
+    background: linear-gradient(155deg,
+            #211910,
+            #14100d) !important;
+
+    border: 1px solid #6b5234 !important;
+    border-radius: 16px !important;
+}
+
+/* Panel headings */
+.admin-main:has([data-dashboard-error]) .admin-panel-heading h2 {
+    color: #f4e3ca !important;
+    font-size: 25px !important;
+    line-height: 1.3;
+}
+
+.admin-main:has([data-dashboard-error]) .admin-panel-heading>a,
+.admin-main:has([data-dashboard-error]) .admin-panel-note {
+    color: #dfbc86 !important;
+    font-size: 13px !important;
+}
+
+/* Existing 7-day sales chart: styling only */
+.admin-main:has([data-dashboard-error]) .admin-chart {
+    height: 260px !important;
+    gap: 10px !important;
+    padding-top: 25px !important;
+
+    border-color: #745738 !important;
+}
+
+.admin-main:has([data-dashboard-error]) .admin-chart-bar {
+    width: min(36px, 75%) !important;
+    background: linear-gradient(180deg,
+            #f0cc93,
+            #997040) !important;
+}
+
+.admin-main:has([data-dashboard-error]) .admin-chart-value {
+    color: #efd8b4 !important;
+    font-size: 12px !important;
+}
+
+.admin-main:has([data-dashboard-error]) .admin-chart-date {
+    color: #c5b294 !important;
+    font-size: 12px !important;
+}
+
+/* Recent orders */
+.admin-main:has([data-dashboard-error]) .admin-recent-row {
+    gap: 8px 14px;
+    padding: 18px 0 !important;
+    border-color: #59452d !important;
+}
+
+.admin-main:has([data-dashboard-error]) .admin-recent-row strong {
+    color: #f1e3d0 !important;
+    font-size: 14px !important;
+    overflow-wrap: anywhere;
+}
+
+.admin-main:has([data-dashboard-error]) .admin-recent-row small {
+    color: #c2b198 !important;
+    font-size: 12px !important;
+    line-height: 1.6;
+}
+
+.admin-main:has([data-dashboard-error]) .admin-recent-total {
+    color: #edc78c !important;
+}
+
+/* Low stock products */
+.admin-main:has([data-dashboard-error]) .admin-low-stock {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,
+            minmax(min(100%, 220px), 1fr));
+
+    gap: 14px !important;
+}
+
+.admin-main:has([data-dashboard-error]) .admin-stock-row {
+    min-width: 0;
+    padding: 18px !important;
+
+    background: #211a12 !important;
+    border: 1px solid #6a5032 !important;
+    border-radius: 12px !important;
+}
+
+.admin-main:has([data-dashboard-error]) .admin-stock-row strong {
+    color: #f1e1cb !important;
+    font-size: 15px !important;
+}
+
+.admin-main:has([data-dashboard-error]) .admin-stock-row span {
+    color: #c4b095 !important;
+    font-size: 13px !important;
+}
+
+.admin-main:has([data-dashboard-error]) .admin-stock-row em {
+    color: #efc080 !important;
+    font-size: 13px !important;
+}
+
+/* Responsive */
+@media (max-width: 1150px) {
+    .admin-main:has([data-dashboard-error]) .admin-dashboard-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .admin-main:has([data-dashboard-error]) .admin-stat-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .admin-main:has([data-dashboard-error]) .admin-stat-grid-secondary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .admin-main:has([data-dashboard-error]) .admin-quick-links {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 650px) {
+
+    .admin-main:has([data-dashboard-error]) .admin-stat-grid,
+    .admin-main:has([data-dashboard-error]) .admin-stat-grid-secondary {
+        grid-template-columns: 1fr !important;
+    }
+
+    .admin-main:has([data-dashboard-error]) .admin-panel {
+        padding: 18px !important;
+    }
+
+    .admin-main:has([data-dashboard-error]) .admin-chart {
+        height: 220px !important;
+        gap: 5px !important;
+    }
+
+    .admin-main:has([data-dashboard-error]) .admin-panel-heading h2 {
+        font-size: 22px !important;
+    }
+
+    .admin-main:has([data-dashboard-error]) .admin-quick-links>div {
+        flex-wrap: wrap;
+    }
+}
+
+/* ==========================================
+   VELORA ADMIN - FIX 04
+   Products & Inventory Refinement
+   CSS ONLY - NO BACKEND CHANGES
+========================================== */
+
+/* Target only Products & Inventory pages */
+.admin-main:has([data-product-rows]),
+.admin-main:has([data-inventory-rows]) {
+    --catalog-gold: #E4BD82;
+    --catalog-text: #F1E5D1;
+    --catalog-muted: #C8B69C;
+    --catalog-border: #685033;
+}
+
+/* Page title and description */
+.admin-main:has([data-product-rows]) .admin-page-heading,
+.admin-main:has([data-inventory-rows]) .admin-page-heading {
+    align-items: flex-start;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 26px;
+}
+
+.admin-main:has([data-product-rows]) .admin-page-heading h1,
+.admin-main:has([data-inventory-rows]) .admin-page-heading h1 {
+    font-size: clamp(36px, 4vw, 54px) !important;
+    line-height: 1.12 !important;
+}
+
+.admin-main:has([data-product-rows]) .admin-page-heading p,
+.admin-main:has([data-inventory-rows]) .admin-page-heading p {
+    line-height: 1.7;
+}
+
+/* PRODUCT FILTERS */
+.admin-main:has([data-product-rows]) .admin-toolbar,
+.admin-main:has([data-inventory-rows]) .studio-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px !important;
+
+    padding: 20px !important;
+    margin-bottom: 20px !important;
+
+    background: linear-gradient(145deg, #211A13, #15110D);
+    border: 1px solid var(--catalog-border);
+    border-radius: 14px;
+}
+
+.admin-main:has([data-product-rows]) .admin-toolbar input[type="search"] {
+    flex: 2 1 260px;
+    min-width: min(100%, 260px);
+}
+
+.admin-main:has([data-product-rows]) .admin-toolbar select {
+    flex: 1 1 175px;
+    min-width: 0;
+}
+
+/* Inventory search and filter labels */
+.admin-main:has([data-inventory-rows]) .studio-toolbar label {
+    color: var(--catalog-text) !important;
+    font-size: 14px !important;
+    line-height: 1.5;
+}
+
+/* INPUTS */
+.admin-main:has([data-product-rows]) .admin-toolbar input,
+.admin-main:has([data-product-rows]) .admin-toolbar select,
+.admin-main:has([data-inventory-rows]) .studio-toolbar input,
+.admin-main:has([data-inventory-rows]) .studio-toolbar select {
+    min-height: 48px !important;
+    font-size: 15px !important;
+    border-radius: 9px !important;
+}
+
+/* TABLE CONTAINER */
+.admin-main:has([data-product-rows]) .admin-table-wrap,
+.admin-main:has([data-inventory-rows]) .admin-table-wrap {
+    overflow-x: auto;
+    max-width: 100%;
+
+    background: #17120D !important;
+    border: 1px solid #745936 !important;
+    border-radius: 14px !important;
+}
+
+/* TABLE HEADERS */
+.admin-main:has([data-product-rows]) .admin-table th,
+.admin-main:has([data-inventory-rows]) .admin-table th {
+    padding: 17px 16px !important;
+
+    background: #2C2116 !important;
+    color: #EDC88E !important;
+
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.04em !important;
+    white-space: nowrap;
+}
+
+/* TABLE DATA */
+.admin-main:has([data-product-rows]) .admin-table td,
+.admin-main:has([data-inventory-rows]) .admin-table td {
+    padding: 17px 16px !important;
+
+    font-size: 15px !important;
+    line-height: 1.65 !important;
+    color: #E8DAC5 !important;
+
+    vertical-align: middle;
+    border-bottom: 1px solid #59432B !important;
+}
+
+/* Better hover effect */
+.admin-main:has([data-product-rows]) .admin-table tbody tr:hover,
+.admin-main:has([data-inventory-rows]) .admin-table tbody tr:hover {
+    background: #2B2117 !important;
+}
+
+/* PRODUCT IMAGE */
+.admin-main:has([data-product-rows]) .admin-product-thumb {
+    width: 60px !important;
+    height: 70px !important;
+    flex-shrink: 0;
+
+    object-fit: contain;
+
+    background: #2B2218 !important;
+    border: 1px solid #715536;
+    border-radius: 10px;
+    padding: 5px;
+}
+
+.admin-main:has([data-product-rows]) .admin-product-cell {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 235px;
+}
+
+.admin-main:has([data-product-rows]) .admin-product-cell strong {
+    color: #F3E2C8 !important;
+    font-size: 15px !important;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+.admin-main:has([data-product-rows]) .admin-product-cell small {
+    display: block;
+
+    color: #BFA98A !important;
+    font-size: 12px !important;
+    line-height: 1.5;
+
+    margin-top: 5px;
+    overflow-wrap: anywhere;
+}
+
+/* ACTION BUTTONS */
+.admin-main:has([data-product-rows]) .admin-row-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: nowrap;
+}
+
+.admin-main:has([data-product-rows]) .admin-row-actions button,
+.admin-main:has([data-inventory-rows]) [data-view-variants] {
+    min-height: 42px !important;
+    padding: 9px 14px !important;
+
+    border-radius: 8px !important;
+    font-size: 13px !important;
+    white-space: nowrap;
+}
+
+/* BULK ACTION TOOLBAR */
+.admin-main:has([data-product-rows]) .studio-selection {
+    background: #21190F !important;
+    border: 1px solid #8C6A40 !important;
+    border-radius: 14px !important;
+    padding: 20px !important;
+}
+
+.admin-main:has([data-product-rows]) .studio-selection-title strong {
+    color: #F0D19E !important;
+    font-size: 17px !important;
+}
+
+.admin-main:has([data-product-rows]) .studio-selection-title span {
+    color: #C9B69B !important;
+    font-size: 13px !important;
+}
+
+/* INVENTORY PRODUCT NAMES */
+.admin-main:has([data-inventory-rows]) [data-inventory-product] td strong {
+    color: #F2D9B2 !important;
+    font-size: 16px !important;
+}
+
+/* INVENTORY VARIANT DETAILS */
+.admin-main:has([data-inventory-rows]) .studio-detail-row td {
+    background: #21190F !important;
+    padding: 18px !important;
+}
+
+.admin-main:has([data-inventory-rows]) .studio-variant-card {
+    background: #17120D !important;
+    border: 1px solid #745736 !important;
+    border-radius: 12px !important;
+    padding: 18px !important;
+    gap: 14px !important;
+}
+
+.admin-main:has([data-inventory-rows]) .studio-size {
+    color: #F1CA8F !important;
+    font-size: 19px !important;
+}
+
+.admin-main:has([data-inventory-rows]) .studio-variant-price {
+    color: #EAD9BC !important;
+    font-size: 15px !important;
+}
+
+.admin-main:has([data-inventory-rows]) .studio-variant-card label {
+    color: #E5CEAB !important;
+    font-size: 14px !important;
+}
+
+.admin-main:has([data-inventory-rows]) .studio-variant-card input {
+    min-height: 44px !important;
+    font-size: 15px !important;
+}
+
+/* PRODUCT EDIT MODAL */
+.admin-main:has([data-product-rows]) .admin-modal {
+    background: #17120E !important;
+    border: 1px solid #87673F !important;
+}
+
+.admin-main:has([data-product-rows]) .admin-modal-header,
+.admin-main:has([data-product-rows]) .admin-modal-body,
+.admin-main:has([data-product-rows]) .admin-form-footer {
+    background: #1C160F !important;
+}
+
+.admin-main:has([data-product-rows]) .admin-category-group,
+.admin-main:has([data-product-rows]) .admin-variant-row,
+.admin-main:has([data-product-rows]) .admin-image-card {
+    background: #282015 !important;
+    border: 1px solid #705536 !important;
+    color: #F1E2C9 !important;
+}
+
+.admin-main:has([data-product-rows]) .admin-category-group h4,
+.admin-main:has([data-product-rows]) .admin-category-option {
+    color: #EAD3AE !important;
+    font-size: 13px !important;
+}
+
+.admin-main:has([data-product-rows]) .admin-form-section-head p,
+.admin-main:has([data-product-rows]) .admin-modal-header p {
+    color: #C6B49B !important;
+    font-size: 14px !important;
+}
+
+.admin-main:has([data-product-rows]) .admin-check {
+    color: #E3CFAC !important;
+    font-size: 14px !important;
+}
+
+/* PAGINATION */
+.admin-main:has([data-product-rows]) .admin-pagination,
+.admin-main:has([data-inventory-rows]) .admin-pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+
+    padding: 22px 4px !important;
+
+    color: #D4BEA0 !important;
+    font-size: 14px !important;
+}
+
+.admin-main:has([data-product-rows]) .admin-pagination button,
+.admin-main:has([data-inventory-rows]) .admin-pagination button {
+    min-height: 44px;
+    padding: 8px 15px;
+
+    border: 1px solid #8C6A40 !important;
+    border-radius: 8px !important;
+    background: #2B2116 !important;
+    color: #F2D1A0 !important;
+}
+
+.admin-main:has([data-product-rows]) .admin-pagination button.active {
+    background: #CFA76B !important;
+    color: #17110B !important;
+}
+
+/* MOBILE AND TABLETS */
+@media (max-width: 900px) {
+    .admin-main:has([data-product-rows]) .admin-toolbar {
+        align-items: stretch;
+    }
+
+    .admin-main:has([data-product-rows]) .admin-toolbar input,
+    .admin-main:has([data-product-rows]) .admin-toolbar select {
+        flex: 1 1 220px;
+    }
+}
+
+@media (max-width: 620px) {
+
+    .admin-main:has([data-product-rows]) .admin-toolbar,
+    .admin-main:has([data-inventory-rows]) .studio-toolbar {
+        padding: 14px !important;
+        gap: 10px !important;
+    }
+
+    .admin-main:has([data-product-rows]) .admin-toolbar>*,
+    .admin-main:has([data-inventory-rows]) .studio-toolbar>* {
+        width: 100%;
+        min-width: 0 !important;
+    }
+
+    .admin-main:has([data-inventory-rows]) .studio-variant-card {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 12px !important;
+        padding: 14px !important;
+    }
+
+    .admin-main:has([data-inventory-rows]) .studio-variant-card label,
+    .admin-main:has([data-inventory-rows]) .studio-variant-card button {
+        grid-column: 1 / -1 !important;
+        width: 100%;
+    }
+
+    .admin-main:has([data-product-rows]) .admin-product-thumb {
+        width: 50px !important;
+        height: 60px !important;
+    }
+
+    .admin-main:has([data-product-rows]) .admin-product-cell {
+        min-width: 185px;
+    }
+
+    .admin-main:has([data-product-rows]) .admin-pagination,
+    .admin-main:has([data-inventory-rows]) .admin-pagination {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+/* =======================================
+   VELORA ADMIN - FIX 05
+   Revenue Chart Layout
+======================================= */
+
+/* Prevent dashboard cards from stretching */
+.admin-dashboard-grid {
+    align-items: start !important;
+}
+
+/* Each card uses its actual content height */
+.admin-dashboard-grid>.admin-panel {
+    align-self: start !important;
+    height: auto !important;
+    min-height: 0 !important;
+}
+
+/* Compact revenue chart */
+.admin-dashboard-grid .admin-chart {
+    height: 250px !important;
+    gap: 12px !important;
+}
+
+/* Display full revenue values */
+.admin-dashboard-grid .admin-chart-value {
+    max-width: none !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    white-space: nowrap !important;
+    font-size: 11px !important;
+}
+
+/* Prevent recent orders from making
+   the dashboard excessively tall */
+.admin-dashboard-grid .admin-recent-orders {
+    max-height: 340px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: #b78b51 #1b150f;
+}
+
+/* Mobile improvements */
+@media (max-width: 760px) {
+    .admin-dashboard-grid .admin-chart {
+        height: 220px !important;
+        gap: 6px !important;
+    }
+
+    .admin-dashboard-grid .admin-chart-value {
+        font-size: 10px !important;
+    }
+
+    .admin-dashboard-grid .admin-recent-orders {
+        max-height: none;
+        overflow-y: visible;
+    }
+}
+
+
+/* ========================================
+   VELORA ADMIN - FIX 06
+   Revenue & Recent Orders Alignment
+======================================== */
+
+/* Make both dashboard cards equal height */
+.admin-main .admin-dashboard-grid {
+    align-items: stretch !important;
+}
+
+.admin-main .admin-dashboard-grid>.admin-panel {
+    align-self: stretch !important;
+    height: auto !important;
+}
+
+/* Allow the revenue card to use its full height */
+.admin-main .admin-dashboard-grid>.admin-sales-panel {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Expand the chart to fill the available space */
+.admin-main .admin-dashboard-grid>.admin-sales-panel .admin-chart {
+    flex: 1 1 auto;
+    height: auto !important;
+    min-height: 260px !important;
+}
+
+/* Keep normal chart height on smaller screens */
+@media (max-width: 1150px) {
+    .admin-main .admin-dashboard-grid>.admin-sales-panel .admin-chart {
+        flex: 0 0 auto;
+        height: 260px !important;
+    }
+}
+
+@media(max-width:1150px) {
+    .studio-coupon-layout {
+        grid-template-columns: 1fr
+    }
+
+    .admin-sidebar {
+        width: 260px
+    }
+}
+
+@media(max-width:900px) {
+    .admin-sidebar {
+        z-index: 100
+    }
+
+    .admin-main-wrap {
+        margin-left: 0
+    }
+
+    .studio-variant-card {
+        grid-template-columns: repeat(3, minmax(0, 1fr))
+    }
+
+    .studio-variant-card label {
+        grid-column: 1/3
+    }
+}
+
+@media(max-width:620px) {
+    .admin-main {
+        padding: 25px 16px 55px
+    }
+
+    .admin-page-heading h1 {
+        font-size: clamp(34px, 10vw, 44px) !important
+    }
+
+    .admin-page-heading>div>p:not(.admin-eyebrow) {
+        font-size: 15px !important
+    }
+
+    .admin-user {
+        gap: 7px
+    }
+
+    .admin-sidebar {
+        width: min(290px, 88vw)
+    }
+
+    .studio-selection-controls,
+    .studio-selection-controls>* {
+        width: 100%
+    }
+
+    .studio-selection {
+        padding: 14px
+    }
+
+    .studio-form-pair {
+        grid-template-columns: 1fr
+    }
+
+    .studio-toolbar label {
+        width: 100%;
+        min-width: 0 !important
+    }
+
+    .studio-variant-card {
+        grid-template-columns: 1fr 1fr;
+        gap: 9px
+    }
+
+    .studio-variant-card label {
+        grid-column: 1/-1
+    }
+
+    .studio-variant-card button {
+        grid-column: 1/-1
+    }
+
+    .studio-variant-message {
+        grid-column: 1/-1
+    }
+}
+
+@media(prefers-reduced-motion:reduce) {
+    .admin-nav a {
+        transition: none !important
+    }
+}

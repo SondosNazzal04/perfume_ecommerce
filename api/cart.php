@@ -3,16 +3,14 @@
 require_once __DIR__ . '/../includes/session.php';
 require_once __DIR__ . '/../config/Database.php';
 require_once __DIR__ . '/../classes/Cart.php';
+require_once __DIR__ . '/../classes/GuestCart.php';
 require_once __DIR__ . '/../core/Response.php';
 
-if (!isset($_SESSION['user_id'])) {
-    Response::json(401, [
-        'success' => false,
-        'message' => 'Unauthorized. Please login.'
-    ]);
+$isGuest = !isset($_SESSION['user_id']);
+$userId = $isGuest ? null : (int) $_SESSION['user_id'];
+if (!isset($_SESSION['guest_cart']) || !is_array($_SESSION['guest_cart'])) {
+    $_SESSION['guest_cart'] = [];
 }
-
-$userId = (int) $_SESSION['user_id'];
 $method = $_SERVER['REQUEST_METHOD'];
 
 if (!in_array($method, ['GET', 'POST', 'PUT', 'DELETE'], true)) {
@@ -90,9 +88,24 @@ try {
 
 try {
     $cart = new Cart($pdo);
+    if (!$isGuest && !empty($_SESSION['guest_cart'])) {
+        GuestCart::mergeInto($pdo, $userId);
+    }
+
+    $getAvailableVariant = static function (int $variantId) use ($pdo): array|false {
+        $stmt = $pdo->prepare(
+            'SELECT v.id, v.stock
+             FROM product_variants v
+             JOIN products p ON p.id = v.product_id
+             WHERE v.id = ? AND p.is_active = 1'
+        );
+        $stmt->execute([$variantId]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    };
 
     // Do not report success for a missing item or another user's item.
     if (
+        !$isGuest &&
         $id !== null &&
         in_array($method, ['PUT', 'DELETE'], true)
     ) {
@@ -111,7 +124,31 @@ try {
 
     switch ($method) {
         case 'GET':
-            $items = $cart->getCartItems($userId);
+            if ($isGuest) {
+                $items = [];
+                $stmt = $pdo->prepare(
+                    'SELECT v.id AS cart_id, v.id AS variant_id,
+                            ? AS quantity, COALESCE(v.discount_price, v.price) AS price,
+                            v.size_ml, p.name AS product_name
+                     FROM product_variants v
+                     JOIN products p ON p.id = v.product_id
+                     WHERE v.id = ? AND p.is_active = 1'
+                );
+                foreach ($_SESSION['guest_cart'] as $variantId => $quantity) {
+                    $variantId = (int) $variantId;
+                    $quantity = (int) $quantity;
+                    if ($variantId < 1 || $quantity < 1) {
+                        continue;
+                    }
+                    $stmt->execute([$quantity, $variantId]);
+                    $item = $stmt->fetch(PDO::FETCH_ASSOC);
+                    if ($item) {
+                        $items[] = $item;
+                    }
+                }
+            } else {
+                $items = $cart->getCartItems($userId);
+            }
 
             Response::json(200, [
                 'success' => true,
@@ -133,22 +170,37 @@ try {
                 ]);
             }
 
-            $stmt = $pdo->prepare(
-                'SELECT v.id
-                 FROM product_variants v
-                 JOIN products p ON p.id = v.product_id
-                 WHERE v.id = ? AND p.is_active = 1'
-            );
-            $stmt->execute([$variantId]);
-
-            if (!$stmt->fetch()) {
+            $variant = $getAvailableVariant($variantId);
+            if (!$variant) {
                 Response::json(404, [
                     'success' => false,
                     'message' => 'Product variant not found or unavailable'
                 ]);
             }
 
-            $added = $cart->addItem($userId, $variantId, $quantity);
+            $currentQuantity = $isGuest
+                ? (int) ($_SESSION['guest_cart'][$variantId] ?? 0)
+                : (function () use ($pdo, $userId, $variantId): int {
+                    $stmt = $pdo->prepare(
+                        'SELECT quantity FROM cart_items WHERE user_id = ? AND variant_id = ?'
+                    );
+                    $stmt->execute([$userId, $variantId]);
+                    return (int) ($stmt->fetchColumn() ?: 0);
+                })();
+
+            if ($currentQuantity + $quantity > (int) $variant['stock']) {
+                Response::json(422, [
+                    'success' => false,
+                    'message' => 'The requested quantity is not available in stock'
+                ]);
+            }
+
+            if ($isGuest) {
+                $_SESSION['guest_cart'][$variantId] = $currentQuantity + $quantity;
+                $added = true;
+            } else {
+                $added = $cart->addItem($userId, $variantId, $quantity);
+            }
 
             Response::json($added ? 201 : 500, [
                 'success' => $added,
@@ -175,7 +227,35 @@ try {
                 ]);
             }
 
-            $updated = $cart->updateQuantity($id, $userId, $quantity);
+            $variantId = null;
+            if ($isGuest) {
+                $variantId = $id;
+                if (!isset($_SESSION['guest_cart'][$variantId])) {
+                    Response::json(404, [
+                        'success' => false,
+                        'message' => 'Cart item not found'
+                    ]);
+                }
+            } else {
+                $stmt = $pdo->prepare('SELECT variant_id FROM cart_items WHERE id = ? AND user_id = ?');
+                $stmt->execute([$id, $userId]);
+                $variantId = (int) $stmt->fetchColumn();
+            }
+
+            $variant = $getAvailableVariant((int) $variantId);
+            if (!$variant || $quantity > (int) $variant['stock']) {
+                Response::json(422, [
+                    'success' => false,
+                    'message' => 'The requested quantity is not available in stock'
+                ]);
+            }
+
+            if ($isGuest) {
+                $_SESSION['guest_cart'][$variantId] = $quantity;
+                $updated = true;
+            } else {
+                $updated = $cart->updateQuantity($id, $userId, $quantity);
+            }
 
             Response::json($updated ? 200 : 500, [
                 'success' => $updated,
@@ -185,7 +265,17 @@ try {
             ]);
 
         case 'DELETE':
-            if ($id === null) {
+            if ($isGuest) {
+                if ($id === null) {
+                    $_SESSION['guest_cart'] = [];
+                } else {
+                    unset($_SESSION['guest_cart'][$id]);
+                }
+                $deleted = true;
+                $message = $id === null
+                    ? 'Cart cleared successfully'
+                    : 'Item removed from cart successfully';
+            } elseif ($id === null) {
                 $deleted = $cart->clearCart($userId);
                 $message = 'Cart cleared successfully';
             } else {

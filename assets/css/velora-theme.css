@@ -1,0 +1,90 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Jost:wght@300;400;500;600&display=swap');
+/* VELORA · presentation-only luxury dark system, loaded after the team’s original storefront styles. */
+:root {
+  --paper:#090909;--white:#13120f;--ink:#f3e8d7;--muted:#ad9d87;--line:rgba(206,166,103,.24);
+  --olive:#c6a069;--soft:#1b1812;--ater-plum:#c6a069;--ater-amber:#c6a069;
+  --ater-rose:#b18b54;--ater-primary:#c6a069;--ater-primary-dark:#e2c28d;
+  --ater-tint:#252018;--ater-border:rgba(206,166,103,.24);--ater-text:#f2e8d9;--ater-muted:#b3a28b;
+}
+html{color-scheme:dark;scroll-behavior:smooth}
+body{background:#090909;color:#f2e8d9;font-family:'Jost',Arial,sans-serif;font-size:14px;line-height:1.65}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at 85% 15%,rgba(132,85,25,.09),transparent 39%),radial-gradient(ellipse at 8% 75%,rgba(113,83,32,.07),transparent 36%)}
+::selection{background:#ceb078;color:#090909}
+a{transition:color .2s,border-color .2s,background .2s}a:hover{color:#f5d9a6}
+.announcement{background:#14120f;color:#d6b985;border-bottom:1px solid #9c794c33;font:500 9px 'Jost',sans-serif;letter-spacing:.18em}
+.announcement i{background:#aa8a56}
+.store-header{background:rgba(9,9,9,.96);border-bottom:1px solid #bd9b683e;backdrop-filter:blur(15px);height:88px;position:relative;z-index:40}
+.wordmark,.store-footer .wordmark{color:#f4eadb!important;font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(25px,3vw,33px);font-weight:500;letter-spacing:.14em;white-space:nowrap;text-decoration:none}
+.wordmark .brand-rune{font:400 8px/1.3 'Jost',Arial,sans-serif;letter-spacing:.15em;color:#bd9d6d;vertical-align:middle;margin-left:6px}
+.main-nav a{color:#cec1b0;font:500 11px 'Jost',sans-serif;letter-spacing:.1em;text-transform:uppercase}
+.main-nav a:hover,.main-nav a.active{color:#e5bf7e}.main-nav a.active::after{background:#d4af73}
+.header-actions,.header-actions .icon-link,.header-actions svg{color:#ead9c0;stroke:#ead9c0}
+.icon-link:hover,.header-actions a:hover{color:#dab67b}.bag-count{background:#cba66e;color:#0b0907;border:1px solid #090909}
+.menu-toggle{color:#e0c596}
+.page-shell{max-width:1320px;padding-top:clamp(35px,5vw,85px);padding-bottom:110px;min-height:calc(100vh - 340px)}
+.page-heading,.section-head{border-color:var(--ater-border)}
+.page-heading h1,.page-shell h1,.page-shell h2,.section-head h2,.form-card h1,.summary-card h2{font-family:'Cormorant Garamond',Georgia,serif!important;color:#f4e5cf;letter-spacing:-.025em;font-weight:500}
+.page-shell h1,.page-heading h1{font-size:clamp(39px,5vw,62px);line-height:1.05}
+.page-shell h2,.section-head h2{font-size:clamp(30px,3.7vw,46px)}
+.page-heading p,.section-head p,.form-card>p:not(.eyebrow),.form-note,.form-card .form-note{color:#b4a38d}
+.eyebrow,.product-brand,.form-card .eyebrow,.detail-info .product-brand{color:#d0a96f!important;letter-spacing:.23em;font-size:10px;font-weight:600}
+.button,.button-dark,.quick-add,.detail-add,.detail-buy-now,.store-button,.checkout-submit{background:linear-gradient(130deg,#e0c18b,#a87b3d)!important;border:1px solid #c9a266!important;color:#15100a!important;border-radius:3px!important;letter-spacing:.12em;font:600 11px 'Jost',sans-serif!important;box-shadow:0 8px 22px #0005;transition:filter .25s,transform .25s,box-shadow .25s}
+.button:hover,.button-dark:hover,.quick-add:hover,.detail-add:hover,.detail-buy-now:hover,.store-button:hover,.checkout-submit:hover{background:linear-gradient(130deg,#f2d9a3,#c99c59)!important;filter:brightness(1.07);color:#100d09!important;transform:translateY(-2px);box-shadow:0 13px 25px #0007}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid #e7bb72!important;outline-offset:3px!important}
+.product-card,.form-card,.summary-card,.review-card,.order-card,.checkout-choice-list,.checkout-section,.checkout-signin,.empty-state{background:linear-gradient(150deg,#1b1914,#100f0e)!important;border:1px solid #b9996640!important;color:#e6d8c1;border-radius:11px!important;box-shadow:0 18px 50px #0004}
+.product-card:hover{border-color:#b99764aa!important;box-shadow:0 24px 50px #0008!important}
+.product-image,.product-photo,.detail-gallery-main,.cart-row img{background:radial-gradient(ellipse at 55% 25%,#30281d,#13120f 70%)!important;border-color:#a986563b!important}
+.product-image img,.product-photo img{mix-blend-mode:normal!important;object-fit:contain}
+.product-name,.product-card h3,.detail-info h1{color:#f6e8d3!important}
+.product-price,.product-price strong,.detail-price,.summary-line,.cart-row,.checkout-summary{color:#e4d1ad!important}
+.product-price .sale{color:#e2bd7d!important}.product-price del{color:#968978!important}
+.product-badge,.status-pill{background:#342919!important;color:#e5be7e!important;border:1px solid #7b5d32!important}
+.category-tile,.checkout-summary,.order-window-notice{background:#181510!important;color:#e6d5b9!important;border-color:#a9875644!important}
+.category-tile:hover{background:#292116!important}.order-window-notice{border-left-color:#c59c58!important}
+.form-card{max-width:550px;padding:clamp(28px,5vw,54px)!important;margin:14px auto 0}
+.form-card h1{font-size:clamp(38px,4vw,54px)!important}.form-card .form-note{font-size:13px!important;line-height:1.7;margin-top:22px;text-align:center}
+.form-card .form-note a,.form-card a:not(.google-button){color:#e1bb7a;text-underline-offset:4px;font-weight:500}
+.form-card .form-note a:hover,.form-card a:not(.google-button):hover{color:#f7dca6}
+.form-field label{color:#ded0b9!important;font-size:12px;font-weight:500;letter-spacing:.025em}
+.form-field input,.form-field textarea,.form-field select,.catalog-toolbar input,.catalog-toolbar select,.checkout-section .form-field input,.checkout-section .form-field select,.coupon-form input,.admin-input{background:#0e0d0b!important;border:1px solid #90734a80!important;color:#f7e9d0!important;border-radius:6px!important;font-family:'Jost',Arial,sans-serif}
+input::placeholder,textarea::placeholder{color:#817463!important}
+.form-field input:focus,.form-field textarea:focus,.form-field select:focus,.catalog-toolbar input:focus,.catalog-toolbar select:focus{border-color:#d2ac6f!important;box-shadow:0 0 0 3px #d3a96420!important}
+.google-button{background:#1d1c18!important;border:1px solid #ad8b5b88!important;color:#f2e7d3!important;border-radius:6px!important;min-height:50px!important;font:500 13px 'Jost',sans-serif!important;box-shadow:none!important;letter-spacing:.02em!important}
+.google-button:hover{background:#28241c!important;border-color:#e0b774!important;transform:none!important}
+.auth-divider{color:#ad9877!important;font-family:'Jost',sans-serif!important;letter-spacing:.15em}.auth-divider:before,.auth-divider:after{background:#a887583b!important}
+.form-message,.coupon-message{font-size:13px;line-height:1.6}.form-message[role="status"]{color:#e0c38e}
+.checkout-choice{border-color:#9f7d4e4f!important;background:#16130e!important;color:#e5d3b7!important}
+.checkout-choice:has(input:checked){background:#2a2115!important;box-shadow:inset 0 0 0 1px #d1a55d!important}
+.checkout-choice input,.checkout-check input{accent-color:#c9a36a!important}
+.detail-size button{background:#1d1b16!important;color:#ebdbc4!important;border-color:#9b7d4caa!important}.detail-size button.selected{background:#c7a167!important;color:#17120c!important}
+.detail-wishlist{background:#19150e!important;border:1px solid #b9925b!important;color:#e5c287!important}.detail-wishlist:hover{background:#2c2317!important}
+.detail-rating,.detail-rating span,.stars,.review-card .stars{color:#d4ae6f!important}
+.detail-stock,.detail-description,.detail-meta,.detail-label{color:#b5a58a!important}
+.cart-row,.summary-line,.review-card{border-color:#a8895740!important}
+.store-footer{background:#0b0a09!important;color:#d7c6ac!important;border-top:1px solid #be965d4d;padding-top:75px}
+.store-footer h3{color:#e7c58a!important;font:500 11px 'Jost',sans-serif!important;letter-spacing:.17em;text-transform:uppercase}
+.store-footer p,.store-footer a,.store-footer span{color:#b7a68e!important}.store-footer a:hover{color:#f2d099!important}
+.store-footer .footer-bottom{border-color:#a98e5c40;color:#aa977b}
+/* Fine typography and no overflowing control panels on narrow screens */
+@media(max-width:820px){.store-header{height:auto;min-height:75px;padding-inline:18px}.wordmark{font-size:25px}.wordmark .brand-rune{display:none}.page-shell{padding-inline:18px}}
+@media(max-width:540px){.page-shell{padding:31px 14px 65px}.form-card{padding:25px 19px!important}.page-heading h1,.page-shell h1{font-size:39px}.form-card h1{font-size:38px!important}.store-footer{padding-inline:23px}}
+
+/* Auth and OTP completion polish */
+.velora-forgot-link{text-align:right;margin:-1px 0 20px;font-size:13px;letter-spacing:.02em}
+.velora-forgot-link a{color:#d7ae6d!important;text-decoration:none;border-bottom:1px solid #b18853a1;padding-bottom:2px}
+.velora-forgot-link a:hover{color:#f4d7a2!important}
+.velora-otp-field{position:relative;padding-bottom:14px}
+.velora-otp-slots{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:clamp(5px,1vw,11px);margin:11px 0 8px;cursor:text}
+.velora-otp-slot{min-height:clamp(48px,8vw,66px);display:grid;place-items:center;background:linear-gradient(145deg,#211d15,#100e0b);border:1px solid #9673427a;border-radius:8px;color:#70614b;font:500 32px/1 'Cormorant Garamond',Georgia,serif;transition:background .3s,border-color .3s,transform .35s,box-shadow .35s}
+.velora-otp-slot.filled{color:#e9ca95;border-color:#d1aa6a;background:#2e2518}
+.velora-otp-slot.current,.velora-otp-field.focused .velora-otp-slot.current{box-shadow:0 0 0 2px #d3af7855;border-color:#e7c38c}
+.velora-otp-capture{position:absolute!important;width:1px!important;height:1px!important;min-height:1px!important;padding:0!important;opacity:.02!important;left:50%;bottom:44px;border:0!important;pointer-events:none}
+.velora-otp-help{font:400 12px 'Jost',sans-serif;color:#ab9b80;margin:5px 0 0}
+.velora-resend-button{background:transparent;border:0;color:#dcba83!important;font:600 13px 'Jost',sans-serif;cursor:pointer;text-decoration:underline;text-underline-offset:4px;padding:4px}
+.velora-resend-button:hover{color:#ffe1ab!important}.velora-resend-button:disabled{opacity:.48;cursor:wait}
+.velora-otp-field.is-verified .velora-otp-slots{position:relative;min-height:78px;display:flex;justify-content:center;align-items:center;gap:0}
+.velora-otp-field.is-verified .velora-otp-slot{margin:0 -15px;transform:rotate(360deg) scale(.24);opacity:0;animation:velora-otp-fuse .75s cubic-bezier(.2,.7,.25,1) both}
+.velora-otp-field.is-verified .velora-otp-slots:after{content:'✓';position:absolute;inset:0;margin:auto;width:70px;height:70px;border:2px solid #d4b678;border-radius:50%;background:#17160f;color:#e6c587;display:grid;place-items:center;font:500 38px 'Cormorant Garamond',serif;animation:velora-otp-confirm .65s .55s both;box-shadow:0 0 45px #bc955331}
+@keyframes velora-otp-fuse{0%{opacity:1;transform:rotate(0) scale(1)}80%{opacity:.65;transform:rotate(320deg) scale(.3)}100%{opacity:0;transform:rotate(360deg) scale(.18)}}
+@keyframes velora-otp-confirm{from{opacity:0;transform:scale(.55)}to{opacity:1;transform:scale(1)}}
+@media(prefers-reduced-motion:reduce){.velora-otp-field.is-verified .velora-otp-slot,.velora-otp-field.is-verified .velora-otp-slots:after{animation:none}.velora-otp-field.is-verified .velora-otp-slot{display:none}}

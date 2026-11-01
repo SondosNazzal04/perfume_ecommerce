@@ -65,8 +65,12 @@ if ($user !== null && $user['email_verified_at'] !== null) {
         ]);
     }
 
-    $resetLink = 'http://localhost/perfume_ecommerce/actions/reset-password.php?token='
-        . urlencode($token);
+    $scriptPath = str_replace('\\', '/', (string) ($_SERVER['SCRIPT_NAME'] ?? '/actions/forgot-password.php'));
+    $projectPath = dirname(dirname($scriptPath));
+    $scheme = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http';
+    $host = (string) ($_SERVER['HTTP_HOST'] ?? 'localhost');
+    $resetLink = $scheme . '://' . $host . rtrim($projectPath, '/')
+        . '/reset-password.php?token=' . urlencode($token);
 
     $sent = $mailService->sendPasswordReset($email, $resetLink);
 

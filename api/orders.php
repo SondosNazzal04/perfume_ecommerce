@@ -4,6 +4,7 @@ require_once __DIR__ . '/../includes/session.php';
 require_once __DIR__ . '/../config/Database.php';
 require_once __DIR__ . '/../classes/Cart.php';
 require_once __DIR__ . '/../classes/Order.php';
+require_once __DIR__ . '/../classes/CouponService.php';
 require_once __DIR__ . '/../core/Response.php';
 
 if (!isset($_SESSION['user_id'])) {
@@ -144,8 +145,53 @@ try {
                 ]);
             }
 
-            $cartModel = new Cart($pdo);
-            $cartItems = $cartModel->getCartItems($userId);
+            $deliveryZone = $body['delivery_zone'] ?? 'amman';
+            if (!is_string($deliveryZone) || !in_array($deliveryZone, ['amman', 'outside'], true)) {
+                Response::json(422, ['success' => false, 'message' => 'Choose a valid delivery area.']);
+            }
+
+            if (($body['save_info'] ?? false) === true) {
+                $firstName = trim((string) ($body['first_name'] ?? ''));
+                $lastName = trim((string) ($body['last_name'] ?? ''));
+                $phone = trim((string) ($body['phone'] ?? ''));
+                if ($firstName === '' || $lastName === '' || $phone === '') {
+                    Response::json(422, ['success' => false, 'message' => 'Enter your name and phone number to save your details.']);
+                }
+                $saveProfile = $pdo->prepare('UPDATE users SET name = ?, phone = ? WHERE id = ?');
+                $saveProfile->execute([$firstName . ' ' . $lastName, $phone, $userId]);
+            }
+
+            $buyNow = ($body['buy_now'] ?? false) === true;
+            if ($buyNow) {
+                $variantId = filter_var($body['variant_id'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+                $quantity = filter_var($body['quantity'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => 99]]);
+                if ($variantId === false || $quantity === false) {
+                    Response::json(422, ['success' => false, 'message' => 'Choose a valid size and quantity.']);
+                }
+                $stmt = $pdo->prepare(
+                    'SELECT v.id AS variant_id, v.size_ml, v.stock,
+                            COALESCE(v.discount_price, v.price) AS price,
+                            p.name AS product_name
+                     FROM product_variants v
+                     JOIN products p ON p.id = v.product_id
+                     WHERE v.id = ? AND p.is_active = 1'
+                );
+                $stmt->execute([$variantId]);
+                $variant = $stmt->fetch(PDO::FETCH_ASSOC);
+                if (!$variant || (int) $variant['stock'] < $quantity) {
+                    Response::json(422, ['success' => false, 'message' => 'This size is out of stock or no longer available.']);
+                }
+                $cartItems = [[
+                    'variant_id' => (int) $variant['variant_id'],
+                    'quantity' => $quantity,
+                    'price' => (float) $variant['price'],
+                    'product_name' => $variant['product_name'],
+                    'size_ml' => (int) $variant['size_ml']
+                ]];
+            } else {
+                $cartModel = new Cart($pdo);
+                $cartItems = $cartModel->getCartItems($userId);
+            }
 
             if (empty($cartItems)) {
                 Response::json(400, [
@@ -165,8 +211,22 @@ try {
                 $subtotalCents += $unitPriceCents * (int) $item['quantity'];
             }
 
-            $deliveryFeeCents = $subtotalCents >= 10000 ? 0 : 500;
-            $totalCents = $subtotalCents + $deliveryFeeCents;
+            $deliveryFeeCents = $subtotalCents >= 10000 ? 0 : ($deliveryZone === 'amman' ? 200 : 300);
+            $couponId = null;
+            $discountCents = 0;
+            if (is_string($_SESSION['applied_coupon'] ?? null) && $_SESSION['applied_coupon'] !== '') {
+                $coupon = (new CouponService($pdo))->validateCode(
+                    $_SESSION['applied_coupon'],
+                    $subtotalCents,
+                    $userId
+                );
+                $couponId = $coupon['coupon_id'];
+                $discountCents = $coupon['discount_cents'];
+            }
+            if ($paymentMethod === 'visa' && $couponId !== null) {
+                Response::json(422, ['success' => false, 'message' => 'Coupon discounts are currently available with cash on delivery.']);
+            }
+            $totalCents = $subtotalCents + $deliveryFeeCents - $discountCents;
 
             if ($totalCents > 9999999999) {
                 Response::json(422, [
@@ -181,7 +241,7 @@ try {
 
             $financialData = [
                 'subtotal' => $subtotal,
-                'discount_amount' => 0.00,
+                'discount_amount' => $discountCents / 100,
                 'delivery_fee' => $deliveryFee,
                 'total_amount' => $totalAmount
             ];
@@ -189,7 +249,18 @@ try {
             if ($paymentMethod === 'visa') {
                 require_once __DIR__ . '/../vendor/autoload.php';
 
-                $stripeConfig = require __DIR__ . '/../config/stripe.php';
+                $stripeConfigPath = __DIR__ . '/../config/stripe.php';
+                if (!is_file($stripeConfigPath)) {
+                    // Accept the legacy misspelling used by existing local installs.
+                    $stripeConfigPath = __DIR__ . '/../config/strip.php';
+                }
+                if (!is_file($stripeConfigPath)) {
+                    Response::json(500, [
+                        'success' => false,
+                        'message' => 'Stripe is not configured. Add config/stripe.php with your Stripe keys.'
+                    ]);
+                }
+                $stripeConfig = require $stripeConfigPath;
 
                 \Stripe\Stripe::setApiKey($stripeConfig['secret_key']);
 
@@ -229,18 +300,21 @@ try {
                     $addressData,
                     $financialData,
                     $cartItems,
-                    'visa'
+                    'visa',
+                    $couponId,
+                    $buyNow
                 );
 
                 try {
+                    $requestScheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+                    $requestHost = $_SERVER['HTTP_HOST'] ?? 'localhost';
+                    $appPath = str_replace(' ', '%20', rtrim(dirname(dirname($_SERVER['SCRIPT_NAME'] ?? '/api/orders.php')), '/\\'));
+                    $appUrl = $requestScheme . '://' . $requestHost . $appPath;
                     $session = \Stripe\Checkout\Session::create([
                         'line_items' => $lineItems,
                         'mode' => 'payment',
-                        'success_url' =>
-                        'http://localhost/perfume_ecommerce/success.php'
-                            . '?session_id={CHECKOUT_SESSION_ID}',
-                        'cancel_url' =>
-                        'http://localhost/perfume_ecommerce/checkout.php',
+                        'success_url' => $appUrl . '/success.php?session_id={CHECKOUT_SESSION_ID}',
+                        'cancel_url' => $appUrl . '/checkout.php',
                         'metadata' => [
                             'user_id' => (string) $userId,
                             'order_id' => (string) $orderId
@@ -354,7 +428,9 @@ try {
                     $addressData,
                     $financialData,
                     $cartItems,
-                    'cash'
+                    'cash',
+                    $couponId,
+                    $buyNow
                 );
             } catch (PDOException $e) {
                 throw $e;
@@ -367,6 +443,7 @@ try {
                 ]);
             }
 
+            unset($_SESSION['applied_coupon']);
             Response::json(201, [
                 'success' => true,
                 'message' => 'Order created successfully.',
@@ -444,6 +521,11 @@ try {
                 'message' => 'Order cancelled successfully. Stock has been returned.'
             ]);
     }
+} catch (DomainException $e) {
+    Response::json(422, [
+        'success' => false,
+        'message' => $e->getMessage()
+    ]);
 } catch (Throwable $e) {
     error_log('Orders API failed: ' . $e->getMessage());
 

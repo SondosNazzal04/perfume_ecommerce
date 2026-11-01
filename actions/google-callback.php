@@ -1,6 +1,8 @@
+
 <?php
 
 require_once __DIR__ . '/../includes/init.php';
+require_once __DIR__ . '/../classes/GuestCart.php';
 
 $googleAuth = new GoogleAuth();
 
@@ -9,6 +11,7 @@ $savedState = $_SESSION['google_oauth_state'] ?? '';
 
 unset($_SESSION['google_oauth_state']);
 
+// Validate OAuth state to prevent CSRF
 if (
     !is_string($state) ||
     !is_string($savedState) ||
@@ -33,6 +36,8 @@ if (!is_string($code) || $code === '') {
         'message' => 'Authorization code is missing'
     ]);
 }
+
+// Get Google user information
 try {
     $googleUser = $googleAuth->getGoogleUser($code);
 } catch (Throwable $e) {
@@ -46,14 +51,19 @@ if ($googleUser === null) {
         'message' => 'Google authentication failed'
     ]);
 }
+
 // 1. Search by Google ID
-$user = $userModel->findByGoogleId($googleUser['google_id']);
+$user = $userModel->findByGoogleId(
+    $googleUser['google_id']
+);
 
 // 2. If Google account is not linked
 if ($user === null) {
 
     // Search by email
-    $user = $userModel->findByEmail($googleUser['email']);
+    $user = $userModel->findByEmail(
+        $googleUser['email']
+    );
 
     if ($user !== null) {
 
@@ -65,7 +75,7 @@ if ($user === null) {
             ]);
         }
 
-        // Link Google account
+        // Link the existing account with Google
         $linked = $userModel->linkGoogleAccount(
             (int) $user['id'],
             $googleUser['google_id']
@@ -77,9 +87,10 @@ if ($user === null) {
                 'message' => 'Unable to link Google account'
             ]);
         }
+
     } else {
 
-        // Create new Google user
+        // Create a new Google user
         $userId = $userModel->createGoogleUser(
             $googleUser['name'],
             $googleUser['email'],
@@ -98,12 +109,69 @@ if ($user === null) {
     ]);
 }
 
-// Start user session
+// Start the authenticated user session
 session_regenerate_id(true);
 
 $_SESSION['user_id'] = (int) $user['id'];
 $_SESSION['user_role'] = $user['role'];
 
-// Redirect to homepage
-header('Location: /perfume_ecommerce/index.php');
+// Merge guest cart into the authenticated user's cart
+try {
+    GuestCart::mergeInto(
+        $conn,
+        (int) $user['id']
+    );
+} catch (Throwable $e) {
+    error_log(
+        'Guest cart merge after Google sign-in failed: '
+        . $e->getMessage()
+    );
+}
+
+/*
+|--------------------------------------------------------------------------
+| GOOGLE LOGIN REDIRECT FIX
+|--------------------------------------------------------------------------
+| The website runs directly at:
+| http://localhost:3000/
+|
+| Redirect to a root-relative page instead of calculating
+| a project folder from SCRIPT_NAME.
+|--------------------------------------------------------------------------
+*/
+
+// Get the requested return page
+$returnPath = $_SESSION['google_return'] ?? 'account.php';
+
+// Remove the one-time return destination from the session
+unset($_SESSION['google_return']);
+
+// Only allow known pages
+$allowedReturns = [
+    'cart.php',
+    'checkout.php',
+    'wishlist.php',
+    'account.php',
+    'index.php'
+];
+
+// Also allow a product details page with a numeric ID
+$isProductPage = (
+    is_string($returnPath) &&
+    preg_match('/^product\.php\?id=\d+$/D', $returnPath) === 1
+);
+
+// Reject invalid or unexpected return paths
+if (
+    !is_string($returnPath) ||
+    (
+        !in_array($returnPath, $allowedReturns, true) &&
+        !$isProductPage
+    )
+) {
+    $returnPath = 'account.php';
+}
+
+// Redirect to the website root, not the /actions/ folder
+header('Location: /' . $returnPath, true, 302);
 exit;

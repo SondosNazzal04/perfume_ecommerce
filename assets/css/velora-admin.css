@@ -1,0 +1,43 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Jost:wght@400;500;600&display=swap');
+/* VELORA admin · frontend stylesheet only: preserves team API / permissions / JS. */
+:root{--admin-ink:#eae0cd;--admin-muted:#ad9f8b;--admin-line:#ba975c42;--admin-paper:#0d0c0a;--admin-white:#1a1712;--admin-olive:#c6a368;--admin-soft:#211c14;--admin-shadow:0 12px 30px #0005;--admin-wine:#c4a167;--admin-wine-deep:#e1bf87}
+.admin-body{background:#0d0c0a;color:#eae0cd;font-family:'Jost',Arial,sans-serif}
+.admin-sidebar{background:#070706;border-right:1px solid #caa46b32}
+.admin-brand{color:#f1e0c3;font-family:'Cormorant Garamond',Georgia,serif!important;letter-spacing:.14em;font-size:24px}
+.admin-brand small{font-family:'Jost',sans-serif;color:#c8a971!important;letter-spacing:.16em}
+.admin-brand-mark{border-color:#c5a26c;background:#251f15;color:#edd09c}
+.admin-nav-label,.admin-version{color:#ac916c!important}
+.admin-nav a{color:#b7aa93}.admin-nav a:hover,.admin-nav a.active{background:#2b2419!important;color:#e8c182!important;border-color:#c5a26c66!important}
+.admin-sidebar-bottom{border-color:#c5a26c36}.admin-sidebar-bottom a,.admin-signout{color:#c8b9a0!important}
+.admin-topbar{background:#14120e!important;border-bottom:1px solid #bc965e3e!important}
+.admin-breadcrumb span,.admin-breadcrumb strong,.admin-user strong{color:#e4d4b8!important}
+.admin-user small{color:#c4ac82!important}.admin-avatar{background:#3b2c18!important;color:#f2d6a3!important}
+.admin-page-heading h1,.admin-panel-heading h2,.admin-modal-header h2,.admin-group-title{font-family:'Cormorant Garamond',Georgia,serif!important;font-size:clamp(26px,3.2vw,44px);font-weight:500!important;color:#f1e0c7!important;letter-spacing:0!important}
+.admin-page-heading p:not(.admin-eyebrow),.admin-page-heading span{color:#b9a98f!important}
+.admin-eyebrow,.admin-panel-note{color:#d7b076!important;letter-spacing:.15em}
+.admin-main{background:#0d0c0a}
+.admin-stat-card,.admin-mini-stat,.admin-panel,.admin-modal,.admin-confirm-modal,.admin-low-stock,.admin-stock-row{background:#1a1712!important;border:1px solid #c39a5a46!important;color:#e6dbc8!important;box-shadow:0 12px 30px #0003!important}
+.admin-stat-grid>.admin-stat-card{background:#1a1712!important;border-top:2px solid #b8945d!important}
+.admin-stat-revenue{background:linear-gradient(135deg,#40301a,#1a1712)!important}
+.admin-stat-card strong,.admin-mini-stat strong,.admin-panel strong,.admin-stat-card>strong,.admin-stock-row strong{color:#f4d9ad!important}
+.admin-stat-top,.admin-stat-top span,.admin-stat-card small,.admin-mini-stat span,.admin-stock-row span{color:#bda98d!important}
+.admin-stat-icon{background:#30261a!important;color:#d4af72!important;border:1px solid #b990554d!important}
+.admin-button-dark{background:linear-gradient(115deg,#dcb676,#a67c43)!important;color:#171109!important;border-color:#bc975b!important}
+.admin-button-dark:hover{background:#e9c88d!important;color:#0c0905!important}
+.admin-button-soft,.admin-button{border-color:#ad885657;color:#e3c28c}
+.admin-button-soft{background:#292216!important;color:#f0d3a1!important}
+.admin-button-soft:hover{background:#3a2d1b!important}
+.admin-table-wrap{background:#1a1712;border:1px solid #9c774340!important}
+.admin-table th{background:#2a241a!important;color:#e3c28f!important}
+.admin-table td{color:#dfd0b9!important;border-color:#a9875140!important}
+.admin-table tbody tr,.admin-table tbody tr:nth-child(odd),.admin-table tbody tr:nth-child(even){background:#1a1712!important}
+.admin-table tbody tr:hover{background:#2a2319!important}
+.admin-toolbar input,.admin-toolbar select,.admin-field input,.admin-field select,.admin-field textarea{background:#11100e!important;border:1px solid #a5814d66!important;color:#f4e6ce!important}
+.admin-toolbar input:focus,.admin-toolbar select:focus,.admin-field input:focus,.admin-field select:focus,.admin-field textarea:focus{border-color:#dab679!important;box-shadow:0 0 0 3px #c5a16b22!important}
+.admin-modal-header{background:#191610!important}.admin-modal-body{background:#1a1712!important;color:#e0cda9!important}
+.admin-confirm-actions,.admin-order-edit-note{background:#221b12!important;border-color:#b38e5945!important;color:#e8d7be!important}
+.admin-icon-button,.admin-pagination button{background:#241e15!important;border-color:#9b795147!important;color:#e9cfa6!important}
+.admin-status{border:1px solid transparent}.admin-loading,.admin-empty{color:#baaa91!important}
+.admin-chart{border-color:#9e7c4f55!important}.admin-chart-bar{background:linear-gradient(180deg,#e0b778,#8c632a)!important}
+.admin-nav a:focus-visible,.admin-body a:focus-visible,.admin-body button:focus-visible,.admin-body input:focus-visible{outline:2px solid #e3bb7e;outline-offset:3px}
+@media(max-width:760px){.admin-sidebar{background:#0a0908}.admin-main{padding-top:28px}}

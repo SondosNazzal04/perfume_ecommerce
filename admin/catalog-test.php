@@ -340,7 +340,7 @@ if (!in_array($clientIp, ['127.0.0.1', '::1'], true)) {
                 flex-direction: column;
             }
         }
-    </style>
+    .catalog-confirm-backdrop{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;background:#20181b80;backdrop-filter:blur(4px)}.catalog-confirm-backdrop.open{display:flex}.catalog-confirm-dialog{width:min(410px,100%);padding:28px;border:1px solid #e6dadd;border-radius:18px;background:#fffdfc;box-shadow:0 25px 70px #2e202633;text-align:center}.catalog-confirm-icon{width:40px;height:40px;margin:0 auto 12px;display:grid;place-items:center;border-radius:50%;background:#f3e9e9;color:#754b50;font-weight:800}.catalog-confirm-dialog h2{margin:0;color:#30262a;font-size:21px}.catalog-confirm-dialog p{margin:10px 0 20px;color:#82767a;font-size:12px;line-height:1.7}.catalog-confirm-dialog div{display:flex;justify-content:center;gap:9px}.catalog-confirm-dialog button{min-height:40px;padding:0 16px;border:1px solid #754b50;border-radius:22px;background:#fff;color:#754b50;font-weight:600;cursor:pointer}.catalog-confirm-dialog #catalog-confirm-yes{background:#754b50;color:#fff}</style>
 </head>
 
 <body>
@@ -607,6 +607,18 @@ if (!in_array($clientIp, ['127.0.0.1', '::1'], true)) {
         let productSlugEdited = false;
 
         const $ = id => document.getElementById(id);
+        function confirmAction(message) {
+            return new Promise(resolve => {
+                const backdrop = $('catalog-confirm');
+                const finish = answer => { backdrop.classList.remove('open'); backdrop.setAttribute('aria-hidden', 'true'); document.body.style.overflow = ''; document.removeEventListener('keydown', onKey); resolve(answer); };
+                const onKey = event => { if (event.key === 'Escape') finish(false); };
+                $('catalog-confirm-message').textContent = message;
+                $('catalog-confirm-yes').onclick = () => finish(true);
+                $('catalog-confirm-cancel').onclick = () => finish(false);
+                backdrop.onclick = event => { if (event.target === backdrop) finish(false); };
+                backdrop.classList.add('open'); backdrop.setAttribute('aria-hidden', 'false'); document.body.style.overflow = 'hidden'; document.addEventListener('keydown', onKey); $('catalog-confirm-yes').focus();
+            });
+        }
 
         async function requestJson(url, options = {}) {
             const response = await fetch(url, options);
@@ -714,7 +726,7 @@ if (!in_array($clientIp, ['127.0.0.1', '::1'], true)) {
         }
 
         async function deleteBrand(brand) {
-            if (!confirm(`Delete brand "${brand.name}"? Brands used by products cannot be deleted.`)) return;
+            if (!await confirmAction(`Delete brand "${brand.name}"? Brands used by products cannot be deleted.`)) return;
             try {
                 const result = await requestJson(`${api.brands}?id=${encodeURIComponent(brand.id)}`, {
                     method: 'DELETE'
@@ -807,7 +819,7 @@ if (!in_array($clientIp, ['127.0.0.1', '::1'], true)) {
         }
 
         async function deleteGroup(group) {
-            if (!confirm(`Delete group "${group.name}"? Groups containing categories cannot be deleted.`)) return;
+            if (!await confirmAction(`Delete group "${group.name}"? Groups containing categories cannot be deleted.`)) return;
             try {
                 const result = await requestJson(`${api.groups}?id=${encodeURIComponent(group.id)}`, {
                     method: 'DELETE'
@@ -939,7 +951,7 @@ if (!in_array($clientIp, ['127.0.0.1', '::1'], true)) {
         }
 
         async function deleteCategory(category) {
-            if (!confirm(`Delete category "${category.name}"? Categories linked to products cannot be deleted.`)) return;
+            if (!await confirmAction(`Delete category "${category.name}"? Categories linked to products cannot be deleted.`)) return;
             try {
                 const result = await requestJson(`${api.categories}?id=${encodeURIComponent(category.id)}`, {
                     method: 'DELETE'
@@ -1071,7 +1083,7 @@ if (!in_array($clientIp, ['127.0.0.1', '::1'], true)) {
         }
 
         async function deleteProduct(product) {
-            if (!confirm(`Delete product "${product.name}"? Products linked to variants, orders or other records may be protected.`)) return;
+            if (!await confirmAction(`Delete product "${product.name}"? Products linked to variants, orders or other records may be protected.`)) return;
             try {
                 const result = await requestJson(`${api.products}?id=${encodeURIComponent(product.id)}`, {
                     method: 'DELETE'
@@ -1178,7 +1190,7 @@ if (!in_array($clientIp, ['127.0.0.1', '::1'], true)) {
         }
 
         async function deleteVariant(variant) {
-            if (!confirm(`Delete the ${variant.size_ml} ml variant? Variants used in carts or orders cannot be deleted.`)) return;
+            if (!await confirmAction(`Delete the ${variant.size_ml} ml variant? Variants used in carts or orders cannot be deleted.`)) return;
             try {
                 const result = await requestJson(`${api.variants}?id=${encodeURIComponent(variant.id)}`, {
                     method: 'DELETE'
@@ -1289,7 +1301,7 @@ if (!in_array($clientIp, ['127.0.0.1', '::1'], true)) {
         }
 
         async function deleteImage(image) {
-            if (!confirm('Delete this image entry? External image files are not deleted.')) return;
+            if (!await confirmAction('Delete this image entry? External image files are not deleted.')) return;
             try {
                 const result = await requestJson(`${api.images}?id=${encodeURIComponent(image.id)}`, {
                     method: 'DELETE'
@@ -1348,6 +1360,6 @@ if (!in_array($clientIp, ['127.0.0.1', '::1'], true)) {
 
         loadPage();
     </script>
-</body>
+<div id="catalog-confirm" class="catalog-confirm-backdrop" aria-hidden="true"><section class="catalog-confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="catalog-confirm-title"><span class="catalog-confirm-icon">!</span><h2 id="catalog-confirm-title">Confirm action</h2><p id="catalog-confirm-message"></p><div><button type="button" id="catalog-confirm-cancel">Cancel</button><button type="button" id="catalog-confirm-yes">Yes, continue</button></div></section></div></body>
 
 </html>
