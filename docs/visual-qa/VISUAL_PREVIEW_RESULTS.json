@@ -1,0 +1,128 @@
+[
+  {
+    "page": "products.php",
+    "viewport": [
+      1440,
+      900
+    ],
+    "preview": "products-1440.png",
+    "style": {
+      "select": {
+        "height": "54px",
+        "minHeight": "54px",
+        "display": "block",
+        "box": "border-box",
+        "rect": 54
+      },
+      "menuBg": "rgba(0, 0, 0, 0)",
+      "screen": 1440,
+      "scroll": 1440,
+      "bodyFont": "16px",
+      "filterBg": "rgba(0, 0, 0, 0)",
+      "filterH2": "47px",
+      "formH1": null
+    },
+    "horizontal_overflow": false
+  },
+  {
+    "page": "products.php",
+    "viewport": [
+      390,
+      844
+    ],
+    "preview": "products-390.png",
+    "style": {
+      "select": {
+        "height": "51px",
+        "minHeight": "51px",
+        "display": "block",
+        "box": "border-box",
+        "rect": 51
+      },
+      "menuBg": "rgb(21, 18, 14)",
+      "screen": 390,
+      "scroll": 390,
+      "bodyFont": "16px",
+      "filterBg": "rgba(0, 0, 0, 0)",
+      "filterH2": "34px",
+      "formH1": null
+    },
+    "horizontal_overflow": false
+  },
+  {
+    "page": "login.php",
+    "viewport": [
+      1440,
+      900
+    ],
+    "preview": "login-1440.png",
+    "style": {
+      "select": null,
+      "menuBg": "rgba(0, 0, 0, 0)",
+      "screen": 1440,
+      "scroll": 1440,
+      "bodyFont": "16px",
+      "filterBg": null,
+      "filterH2": null,
+      "formH1": "60px"
+    },
+    "horizontal_overflow": false
+  },
+  {
+    "page": "login.php",
+    "viewport": [
+      390,
+      844
+    ],
+    "preview": "login-390.png",
+    "style": {
+      "select": null,
+      "menuBg": "rgb(21, 18, 14)",
+      "screen": 390,
+      "scroll": 390,
+      "bodyFont": "16px",
+      "filterBg": null,
+      "filterH2": null,
+      "formH1": "43px"
+    },
+    "horizontal_overflow": false
+  },
+  {
+    "page": "account.php",
+    "viewport": [
+      1440,
+      900
+    ],
+    "preview": "account-1440.png",
+    "style": {
+      "select": null,
+      "menuBg": "rgba(0, 0, 0, 0)",
+      "screen": 1440,
+      "scroll": 1440,
+      "bodyFont": "16px",
+      "filterBg": null,
+      "filterH2": null,
+      "formH1": null
+    },
+    "horizontal_overflow": false
+  },
+  {
+    "page": "cart.php",
+    "viewport": [
+      1440,
+      900
+    ],
+    "preview": "cart-1440.png",
+    "style": {
+      "select": null,
+      "menuBg": "rgba(0, 0, 0, 0)",
+      "screen": 1440,
+      "scroll": 1440,
+      "bodyFont": "16px",
+      "filterBg": null,
+      "filterH2": null,
+      "formH1": null
+    },
+    "horizontal_overflow": false
+  }
+]

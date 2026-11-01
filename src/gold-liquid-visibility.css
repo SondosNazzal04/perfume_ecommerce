@@ -1,0 +1,20 @@
+/* Scoped GOLD-LIQUID restoration ONLY. Other cinematic sections are untouched.
+   Keep the original file, timing, and signature ribbon as approved. */
+#brand-story .story-liquid{isolation:isolate}
+#brand-story .story-liquid-film{
+  width:100%;height:100%;left:0;top:0;object-fit:cover;object-position:left center;
+  filter:brightness(1.42) contrast(1.1) saturate(1.18);
+  mix-blend-mode:screen;
+  -webkit-mask-image:linear-gradient(90deg,#000 0%,#000 62%,transparent 100%);
+  mask-image:linear-gradient(90deg,#000 0%,#000 62%,transparent 100%);
+  -webkit-mask-composite:initial;mask-composite:initial;
+}
+#notes .liquid-film{
+  width:100%;height:100%;left:0;top:0;object-fit:cover;object-position:left center;
+  filter:brightness(1.43) contrast(1.1) saturate(1.2);
+  mix-blend-mode:screen;
+  -webkit-mask-image:linear-gradient(90deg,#000 0%,#000 72%,transparent 100%);
+  mask-image:linear-gradient(90deg,#000 0%,#000 72%,transparent 100%);
+  -webkit-mask-composite:initial;mask-composite:initial;
+}
+@media(max-width:760px){#brand-story .story-liquid-film{object-position:left center}#notes .liquid-film{object-position:left center}}

@@ -14,7 +14,9 @@ class Order
         $addressData,
         $financialData,
         $cartItems,
-        $paymentMethod = 'cash'
+        $paymentMethod = 'cash',
+        $couponId = null,
+        $buyNow = false
     ) {
         if (!in_array($paymentMethod, ['cash', 'visa'], true)) {
             throw new InvalidArgumentException('Invalid payment method.');
@@ -27,15 +29,23 @@ class Order
         $this->pdo->beginTransaction();
 
         try {
-            $stmt = $this->pdo->prepare(
-                "SELECT id, variant_id, quantity
-                 FROM cart_items
-                 WHERE user_id = ?
-                 ORDER BY variant_id
-                 FOR UPDATE"
-            );
-            $stmt->execute([$userId]);
-            $currentCart = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if ($buyNow) {
+                $currentCart = array_map(static fn($item) => [
+                    'id' => null,
+                    'variant_id' => (int) $item['variant_id'],
+                    'quantity' => (int) $item['quantity']
+                ], $cartItems);
+            } else {
+                $stmt = $this->pdo->prepare(
+                    "SELECT id, variant_id, quantity
+                     FROM cart_items
+                     WHERE user_id = ?
+                     ORDER BY variant_id
+                     FOR UPDATE"
+                );
+                $stmt->execute([$userId]);
+                $currentCart = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            }
 
             if (count($currentCart) !== count($cartItems)) {
                 throw new RuntimeException(
@@ -153,6 +163,21 @@ class Order
                 );
             }
 
+            if ($couponId !== null) {
+                require_once __DIR__ . '/CouponService.php';
+                $coupon = (new CouponService($this->pdo))->validateId(
+                    (int) $couponId,
+                    $subtotalCents,
+                    true,
+                    (int) $userId
+                );
+                if ((int) round((float) $financialData['discount_amount'] * 100) !== $coupon['discount_cents']) {
+                    throw new RuntimeException('Coupon discount changed. Please refresh checkout.');
+                }
+            } elseif ((int) round((float) $financialData['discount_amount'] * 100) !== 0) {
+                throw new InvalidArgumentException('A valid coupon is required for this discount.');
+            }
+
             $deliveryCents = (int) round(
                 (float) $financialData['delivery_fee'] * 100
             );
@@ -182,11 +207,11 @@ class Order
             $stmt = $this->pdo->prepare(
                 "INSERT INTO orders (
                     user_id, city, area, street, building,
-                    subtotal, discount_amount, delivery_fee,
+                    subtotal, discount_amount, delivery_fee, coupon_id,
                     total_amount, status
                  ) VALUES (
                     :user_id, :city, :area, :street, :building,
-                    :subtotal, :discount_amount, :delivery_fee,
+                    :subtotal, :discount_amount, :delivery_fee, :coupon_id,
                     :total_amount, 'pending'
                  )"
             );
@@ -199,6 +224,7 @@ class Order
                 'subtotal' => $subtotalCents / 100,
                 'discount_amount' => $discountCents / 100,
                 'delivery_fee' => $deliveryCents / 100,
+                'coupon_id' => $couponId,
                 'total_amount' => $totalCents / 100
             ]);
 
@@ -245,10 +271,12 @@ class Order
                     $item['price']
                 ]);
 
-                $stmt = $this->pdo->prepare(
-                    "DELETE FROM cart_items WHERE id = ? AND user_id = ?"
-                );
-                $stmt->execute([$item['cart_id'], $userId]);
+                if (!$buyNow) {
+                    $stmt = $this->pdo->prepare(
+                        "DELETE FROM cart_items WHERE id = ? AND user_id = ?"
+                    );
+                    $stmt->execute([$item['cart_id'], $userId]);
+                }
             }
 
             $this->pdo->commit();
@@ -268,7 +296,8 @@ class Order
         $this->autoConfirmOrders();
 
         $stmt = $this->pdo->prepare(
-            "SELECT id, total_amount, status, created_at
+            "SELECT id, total_amount, status, created_at,
+                    UNIX_TIMESTAMP(DATE_ADD(created_at, INTERVAL 6 HOUR)) AS cancel_until
              FROM orders
              WHERE user_id = ?
              ORDER BY created_at DESC, id DESC"
@@ -285,7 +314,8 @@ class Order
         $stmt = $this->pdo->prepare(
             "SELECT id, city, area, street, building, subtotal,
                     discount_amount, delivery_fee, total_amount,
-                    status, created_at
+                    status, created_at,
+                    UNIX_TIMESTAMP(DATE_ADD(created_at, INTERVAL 6 HOUR)) AS cancel_until
              FROM orders
              WHERE id = ? AND user_id = ?"
         );
@@ -298,6 +328,7 @@ class Order
 
         $stmt = $this->pdo->prepare(
             "SELECT oi.quantity, oi.unit_price AS price,
+                    v.product_id,
                     p.name AS product_name, v.size_ml
              FROM order_items oi
              JOIN product_variants v ON oi.variant_id = v.id
@@ -494,6 +525,32 @@ class Order
         }
     }
 
+    public function updateDeliveredOrderStatus(int $orderId, string $newStatus): bool
+    {
+        if (!in_array($newStatus, ['confirmed', 'processing', 'shipped', 'delivered'], true)) {
+            throw new InvalidArgumentException('Invalid status for a delivered order.');
+        }
+
+        $this->pdo->beginTransaction();
+        try {
+            $stmt = $this->pdo->prepare('SELECT status FROM orders WHERE id = ? FOR UPDATE');
+            $stmt->execute([$orderId]);
+            $order = $stmt->fetch(PDO::FETCH_ASSOC);
+            if (!$order || $order['status'] !== 'delivered') {
+                throw new RuntimeException('Only delivered orders can be edited here.');
+            }
+
+            $stmt = $this->pdo->prepare('UPDATE orders SET status = ? WHERE id = ?');
+            $stmt->execute([$newStatus, $orderId]);
+            $this->pdo->commit();
+            return true;
+        } catch (Throwable $e) {
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+            throw $e;
+        }
+    }
     public function updateOrderStatus($orderId, $status)
     {
         if (!in_array($status, ['delivered', 'cancelled'], true)) {

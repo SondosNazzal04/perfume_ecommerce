@@ -1,0 +1,12 @@
+/* V2 homepage-only commerce navigation; no changes to cinematic scroll stages. */
+.nav .tools{display:flex;align-items:center;gap:clamp(7px,1.2vw,15px)}
+.nav .velora-nav-icon{display:inline-grid;place-items:center;width:37px;height:39px;color:#d8bb88;text-decoration:none;font:24px/1 Georgia,serif;border:1px solid rgba(206,171,109,.22);border-radius:50%;transition:background .2s,border-color .2s}
+.nav .velora-nav-icon:hover,.nav .velora-nav-icon:focus-visible{background:rgba(209,172,104,.12);border-color:#d6b67b}
+.nav a:focus-visible,.fragrance-detail-dialog a:focus-visible,.velora-real-shop-link:focus-visible{outline:2px solid #d9b977;outline-offset:4px}
+.nav #cart-toggle{text-decoration:none}
+.velora-real-shop-link{display:inline-block;color:#d8b777;border-bottom:1px solid rgba(216,183,119,.55);font:500 11px/1.9 Jost,Arial,sans-serif;letter-spacing:.13em;text-decoration:none;padding:7px 1px;margin:9px 0}
+#fragrance-search .velora-real-shop-link{margin-top:22px}
+.best-sellers .shop-demo-note{font:400 12px/1.7 Jost,Arial,sans-serif;letter-spacing:.02em;color:#ae9b7b;text-align:center;padding:12px 24px 38px}
+.perfume-card .card-actions a{text-decoration:none}
+.fragrance-detail-dialog .info-actions{flex-wrap:wrap;gap:15px}
+@media(max-width:760px){.nav .velora-nav-icon{width:32px;height:35px;font-size:20px}.nav .tools{gap:4px}.nav #cart-toggle{width:35px;height:35px}}

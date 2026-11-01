@@ -1,0 +1,139 @@
+/* VELORA reference sequence — non-destructive extension of the approved Phase 1.
+   Sections 03–08 follow the attached reference video. Hero and Collection CSS remain intact. */
+:root{--cinema-black:#070605;--cinema-gold:#d8b779;--cinema-border:#c6a26d30}
+html{scroll-padding-top:var(--navh)}
+.cinematic-section,.premium-cta{position:relative;isolation:isolate;overflow:hidden;background:#070605;color:#f3ecdf}
+.cinematic-section{min-height:100svh;display:flex;align-items:center;justify-content:center;padding:100px clamp(26px,6.4vw,120px) 75px}
+.cinematic-section::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:-1;background:radial-gradient(ellipse at 68% 48%,#bc844519,transparent 48%),linear-gradient(115deg,#090806,#030303 82%)}
+.cinematic-index{position:absolute;inset:clamp(82px,10vh,116px) clamp(22px,5vw,76px) auto;display:flex;justify-content:space-between;gap:15px;color:#d0b17d9c;letter-spacing:.27em;font-size:9px;z-index:8;pointer-events:none}
+.cinema-title{font:500 clamp(50px,6.2vw,104px)/.91 var(--serif);letter-spacing:-.028em;text-wrap:balance}
+.cinema-title em,.cinematic-copy h3 em{font-weight:400;color:#e2c28c;font-style:italic}
+.cinematic-copy{position:relative;z-index:5}
+.cinematic-copy p,.premium-cta p{font-size:clamp(13px,1.1vw,16px);color:#c1b5a2;line-height:1.8;max-width:36ch;margin:20px 0 26px}
+.cinematic-copy .eyebrow{display:block;margin-bottom:18px}
+.cinematic-copy h3{font:500 clamp(37px,3.8vw,65px)/.98 var(--serif)}
+.cinema-text-link{display:inline-flex;align-items:center;gap:18px;color:#ecd2a6;font-size:10px;letter-spacing:.18em;border-bottom:1px solid #e2b86e89;padding:12px 1px;transition:color .25s}
+.cinema-text-link:hover{color:white}.cinema-button{display:inline-flex;align-items:center;justify-content:space-between;gap:25px;min-height:48px;padding:0 22px;background:linear-gradient(115deg,#f2dcae,#cda466);color:#201507;font-size:10px;font-weight:600;letter-spacing:.14em;transition:filter .2s,transform .2s}
+.cinema-button:hover{filter:brightness(1.12);transform:translateY(-2px)}
+.cinematic-scroll-cue{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);color:#a9967c;font-size:9px;letter-spacing:.28em;display:flex;gap:16px;align-items:center;pointer-events:none}
+.cinematic-scroll-cue span{font-size:16px;color:var(--gold)}
+/* PRODUCT SHOWCASE — centered platform, atmospheric contrast, two editorial information columns. */
+.showcase-section{min-height:115svh;justify-content:space-between;gap:22px;background:radial-gradient(ellipse at 55% 72%,#2d1e0d,#070606 65%)}
+.showcase-visual{position:absolute;inset:5% 9% 0;z-index:0;pointer-events:none;overflow:hidden}
+.showcase-film{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;mix-blend-mode:screen;opacity:.96;filter:brightness(.87) contrast(1.1)}
+.showcase-halo{position:absolute;inset:5% 10%;background:radial-gradient(ellipse at 50% 48%,#aa692418,transparent 54%);mix-blend-mode:screen;pointer-events:none}
+.showcase-floor{position:absolute;inset:auto 0 0;height:16%;background:linear-gradient(transparent,#060505c9)}
+.showcase-left{align-self:center;width:min(27vw,360px);margin-top:-6svh}
+.showcase-left .cinema-title{font-size:clamp(47px,5vw,80px)}
+.showcase-right{align-self:center;text-align:right;width:min(26vw,330px);margin-top:18svh}
+.showcase-right p{margin-left:auto}
+.showcase-right .cinema-text-link{justify-self:end}
+/* BRAND STORY — photographic VELORA artwork plus moving bronze botanical orbit motifs. */
+.story-section{min-height:110svh;justify-content:flex-start;background:radial-gradient(ellipse at 75% 40%,#302112,#050505 65%)}
+.story-art{position:absolute;inset:0 0 0 35%;z-index:1;pointer-events:none;overflow:hidden}
+.story-film{position:absolute;width:100%;height:100%;object-fit:contain;filter:brightness(.96) contrast(1.07);mix-blend-mode:screen}
+.story-art::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#080706 0%,transparent 42%),radial-gradient(ellipse at 45% 50%,transparent 35%,#070605c1 90%);pointer-events:none}
+.story-orbit{position:absolute;z-index:1;border:1px solid #ad7a3b62;border-radius:50%;width:min(49vw,700px);aspect-ratio:1;left:14%;top:20%;transform:rotate(-25deg) scaleY(.28);box-shadow:0 0 65px #b7812e18}
+.orbit-two{width:min(35vw,540px);left:24%;top:31%;transform:rotate(24deg) scaleY(.3);border-color:#e0b06641}
+.story-dust,.signature-sparks{position:absolute;inset:0;opacity:.65;background-image:radial-gradient(2px 2px at 30% 26%,#ffda988f,transparent),radial-gradient(2px 2px at 73% 36%,#ffdfbd9c,transparent),radial-gradient(1px 1px at 63% 58%,#f7c15c9c,transparent),radial-gradient(1.3px 1.3px at 21% 72%,#f5d5ae91,transparent),radial-gradient(1.6px 1.6px at 88% 81%,#dfbf898c,transparent)}
+.story-copy{width:min(42vw,540px)}
+.story-second{position:absolute;right:8%;bottom:11%;max-width:250px;text-align:right;z-index:4}
+.story-second p{margin-left:auto}
+/* FRAGRANCE NOTES — original two VFX elements each stay in their own compositing layer. */
+.notes-section{display:block;padding:130px 3vw 65px;background:radial-gradient(ellipse at 50% 50%,#151006,#030303 75%)}
+.notes-heading{text-align:center;font-size:clamp(48px,6.2vw,87px);margin:7px 0 0;position:relative;z-index:3}
+.notes-stage{display:grid;grid-template-columns:1.03fr .96fr 1.03fr;align-items:center;min-height:75svh;gap:12px;max-width:1600px;margin:auto}
+.liquid-column,.pipette-column{height:min(68svh,650px);position:relative;overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 20%,#000 84%,transparent)}
+.notes-film{width:100%;height:100%;object-fit:contain;mix-blend-mode:screen;filter:saturate(1.1) contrast(1.06)}
+.liquid-film{object-position:10% 50%;transform:scale(1.07)}.pipette-film{object-position:50% 50%;transform:scale(1.05)}
+.notes-list{position:relative;z-index:3;padding:10px max(12px,2vw);background:radial-gradient(ellipse at 50% 50%,#0f0b08be,transparent 80%)}
+.note-row{display:flex;gap:22px;align-items:flex-start;padding:26px 4px;border-bottom:1px solid #d0a36336}.note-row:first-child{border-top:1px solid #d0a36336}
+.note-index{font-size:9px;letter-spacing:.22em;color:#d8b36c;margin-top:6px}.note-row div{display:grid;gap:6px}.note-type{font-size:10px;letter-spacing:.23em;color:#bea06e}.note-row strong{font:500 clamp(28px,3vw,43px)/1 var(--serif);color:#eed4a6}.note-row small{font-size:11px;color:#b7a18b;letter-spacing:.025em}
+/* SIGNATURE — rear/front interleaved ribbon visually wraps the *same* approved bottle. */
+.signature-section{min-height:110svh;justify-content:flex-start;background:radial-gradient(ellipse at 71% 65%,#291707,#070504 60%)}
+.signature-words{width:min(42vw,510px)}
+.signature-vfx{position:absolute;inset:7% 0 0 37%;pointer-events:none}
+.signature-vfx::before{content:"";position:absolute;inset:15% 5% 8%;background:radial-gradient(ellipse at 56% 63%,#e5a74025,transparent 55%);filter:blur(24px)}
+.signature-bottle{position:absolute;z-index:3;height:min(72svh,730px);max-width:67%;width:auto;object-fit:contain;left:49%;top:52%;transform:translate(-50%,-50%);filter:drop-shadow(0 22px 35px #000b) drop-shadow(6px 0 17px #d99c4b36)}
+.ribbon{position:absolute;inset:0;width:100%;height:100%;overflow:visible;filter:drop-shadow(0 0 10px #f2c46d9c) drop-shadow(0 0 18px #8f551e)}
+.ribbon-back{z-index:2;opacity:.83}.ribbon-front{z-index:4;opacity:.97}
+.ribbon-path{fill:none;stroke-width:16;stroke-linecap:round;stroke-linejoin:round}
+.ribbon-front .ribbon-path{stroke-width:15}
+.signature-smoke{position:absolute;inset:55% 0 0;z-index:5;background:radial-gradient(ellipse at 52% 100%,#c4b6a028,transparent 61%),linear-gradient(0deg,#070605,transparent 85%);filter:blur(8px)}
+.signature-sparks{z-index:5;pointer-events:none}
+/* CTA and multi-column footer faithful to reference end sequence. */
+.premium-cta{text-align:center;min-height:57svh;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:100px 20px 85px;background:radial-gradient(ellipse at 50% 0%,#241808 0%,#080706 68%);border-top:1px solid var(--cinema-border)}
+.premium-cta .cinema-title{max-width:900px;font-size:clamp(46px,6vw,88px);margin:10px 0 3px}
+.premium-cta p{max-width:46ch;margin:16px auto 24px}
+.cinematic-footer{display:block;padding:76px max(5vw,calc((100vw - 1330px)/2)) 25px;background:#060605}
+.footer-brand{float:left;width:34%}.footer-brand .logo{display:inline-block;font-size:37px}.footer-brand p{font-size:12px;color:#b5a68f;letter-spacing:.02em;margin-top:16px}
+.footer-links{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-left:40%}
+.footer-links>div{display:flex;flex-direction:column;gap:9px}.footer-links span{color:#d2b075;letter-spacing:.22em;font-size:10px;margin-bottom:12px}
+.footer-links a{font-size:12px;letter-spacing:.02em;text-transform:none;color:#c4b6a1}.footer-links a:hover{color:#f4d9a8}
+.footer-bottom{clear:both;display:flex;justify-content:space-between;gap:20px;padding-top:60px;margin-top:35px;border-top:1px solid #ffffff1a;font-size:9px;letter-spacing:.15em;color:#9a8c75}
+/* Detailed product still works, but opens on request instead of interrupting scroll narrative. */
+.fragrance-detail-dialog:not([open]){display:none}
+.fragrance-detail-dialog[open]{position:fixed;inset:50% auto auto 50%;transform:translate(-50%,-50%);width:min(980px,92vw);max-height:90svh;overflow:auto;min-height:0;z-index:1000;margin:0;padding:40px 45px;grid-template-columns:44% 56%;background:#100b08;color:#fff;border:1px solid #d5ab6a65;box-shadow:0 30px 200px #000;gap:30px}
+.fragrance-detail-dialog::backdrop{background:#000c;backdrop-filter:blur(6px)}
+.fragrance-detail-dialog .info-image{max-height:420px}.detail-close{position:absolute;top:9px;right:17px;font-size:30px;z-index:8}
+.fragrance-detail-dialog .info-content h2{font-size:clamp(40px,4.5vw,65px)}
+@media(max-width:1000px){
+ .cinematic-section{padding-left:5vw;padding-right:5vw}
+ .showcase-left{width:27vw}.showcase-right{width:26vw}.showcase-left .cinema-title{font-size:clamp(38px,4.8vw,62px)}
+ .showcase-right h3{font-size:clamp(33px,4.1vw,52px)}
+ .signature-vfx{left:32%}.signature-bottle{height:min(67svh,610px)}
+}
+@media(max-width:820px){
+ .cinematic-index{font-size:8px;left:18px;right:18px;top:70px;letter-spacing:.15em}.cinematic-index span:last-child{display:none}
+ .cinematic-section{padding:105px 22px 65px;min-height:100svh}
+ .cinema-title{font-size:clamp(44px,9.5vw,69px)}
+ .showcase-section{display:flex;flex-direction:column;justify-content:space-between;min-height:120svh;gap:12px;padding-bottom:8vh}
+ .showcase-visual{inset:17% -3% 20%}.showcase-film{object-fit:contain}
+ .showcase-left,.showcase-right{width:100%;max-width:450px;align-self:flex-start;text-align:left;margin:5vh 0 0;position:relative}
+ .showcase-left .cinema-title{font-size:clamp(40px,9vw,55px)}
+ .showcase-left p{max-width:30ch}.showcase-right{align-self:flex-end;max-width:235px;text-align:right;margin-top:auto}
+ .showcase-right p{display:none}.showcase-right h3{font-size:32px}.showcase-right .eyebrow{font-size:9px}
+ .story-section{min-height:105svh;align-items:flex-start}.story-art{inset:22% 0 10%}.story-film{object-fit:contain;filter:brightness(.86)}
+ .story-copy{width:100%;max-width:390px;margin-top:0}.story-copy h2{font-size:56px}.story-copy p{max-width:32ch}
+ .story-second{right:8%;bottom:5%;max-width:210px}.story-second h3{font-size:30px}.story-second p{display:none}
+ .notes-section{padding:95px 0 60px}.notes-heading{font-size:51px;margin:12px 0 24px}
+ .notes-stage{grid-template-columns:1fr 1fr;grid-template-areas:'liquid pipette' 'notes notes';min-height:0;gap:0}
+ .liquid-column{grid-area:liquid}.pipette-column{grid-area:pipette}
+ .liquid-column,.pipette-column{height:33svh;min-height:220px;mask-image:linear-gradient(90deg,transparent,#000 12%,#000 89%,transparent)}
+ .notes-list{grid-area:notes;width:min(520px,90vw);margin:auto;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:12px 0}
+ .note-row{display:block;border:0;border-top:1px solid #d0a36336;padding:14px 0}.note-index{display:none}
+ .note-row strong{font-size:clamp(19px,5vw,29px)}.note-row small{font-size:10px}.note-type{font-size:8px;letter-spacing:.1em}
+ .signature-section{min-height:102svh;display:flex;align-items:flex-start}.signature-words{width:100%;max-width:430px;margin-top:4vh}
+ .signature-words p{max-width:35ch}.signature-vfx{inset:32% -9% 2% 5%}.signature-bottle{height:min(57svh,560px);max-width:65%;left:56%;top:51%}
+ .ribbon-path{stroke-width:10}.ribbon-front .ribbon-path{stroke-width:10}
+ .premium-cta{min-height:48svh}.premium-cta .cinema-title{font-size:clamp(42px,9vw,66px)}
+ .cinematic-footer{padding:65px 24px 23px}.footer-brand{float:none;width:100%}.footer-links{margin:35px 0 0;gap:14px}.footer-bottom{margin-top:5px;padding-top:25px;flex-wrap:wrap;line-height:1.7}
+ .fragrance-detail-dialog[open]{grid-template-columns:1fr;padding:30px 20px;gap:12px;max-height:90svh}.fragrance-detail-dialog .info-image{max-height:250px}.fragrance-detail-dialog .info-content h2{font-size:42px}
+}
+@media(max-width:480px){
+ .cinematic-copy .eyebrow{font-size:9px}.cinematic-copy p{font-size:12px}
+ .showcase-visual{inset:20% -19% 17%}.showcase-right{max-width:210px}
+ .notes-list{width:94vw;gap:8px}.note-row strong{font-size:21px}.note-row small{font-size:9px}
+ .story-copy h2{font-size:52px}.story-film{transform:scale(1.05)}
+ .signature-vfx{inset:33% -18% 2% -7%}
+ .footer-links span{font-size:9px}.footer-links a{font-size:11px}
+}
+@media(prefers-reduced-motion:reduce){
+ .story-orbit,.ribbon,.signature-sparks{animation:none!important}
+ .cinematic-section{min-height:80svh}.showcase-section{min-height:90svh}
+ .notes-section{min-height:90svh}
+}
+/* Final visual QA refinements — remove hard video boundaries, ensure mobile legibility. */
+.notes-film{-webkit-mask-image:radial-gradient(ellipse 85% 70% at 50% 50%,#000 56%,transparent 100%);mask-image:radial-gradient(ellipse 85% 70% at 50% 50%,#000 56%,transparent 100%)}
+.story-second h3{font-size:clamp(31px,3vw,47px)}
+@media(max-width:820px){
+ .notes-list{grid-template-columns:1fr;gap:0;max-width:420px}
+ .note-row{display:flex;align-items:center;gap:10px;padding:10px 0}
+ .note-index{display:block;min-width:18px}
+ .note-row div{gap:2px}
+ .note-type{font-size:8px;letter-spacing:.17em}
+ .note-row strong{font-size:clamp(26px,6vw,32px)}
+ .note-row small{font-size:10px}
+ .signature-vfx{inset:42% -9% 0 -7%}
+ .signature-bottle{height:min(48svh,440px);top:57%;left:55%}
+}

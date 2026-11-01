@@ -1,0 +1,49 @@
+{
+  "version": 3,
+  "format": "webp-atlas",
+  "framesPerSheet": 6,
+  "smoke": {
+    "frames": 66,
+    "fps": 12,
+    "duration": 5.5,
+    "anchor": [
+      0.12,
+      0.55
+    ],
+    "variants": {
+      "desktop": {
+        "width": 640,
+        "height": 360,
+        "pattern": "assets/motion/smoke/desktop/{sheet}.webp",
+        "sheets": 11
+      },
+      "mobile": {
+        "width": 384,
+        "height": 216,
+        "pattern": "assets/motion/smoke/mobile/{sheet}.webp",
+        "sheets": 11
+      }
+    }
+  },
+  "fog": {
+    "frames": 42,
+    "fps": 6,
+    "duration": 7,
+    "anchor": null,
+    "variants": {
+      "desktop": {
+        "width": 320,
+        "height": 180,
+        "pattern": "assets/motion/fog/desktop/{sheet}.webp",
+        "sheets": 7
+      },
+      "mobile": {
+        "width": 256,
+        "height": 144,
+        "pattern": "assets/motion/fog/mobile/{sheet}.webp",
+        "sheets": 7
+      }
+    }
+  },
+  "bottle": null
+}

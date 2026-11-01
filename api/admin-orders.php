@@ -221,6 +221,27 @@ try {
                 ]);
             }
 
+            if (($body['action'] ?? '') === 'edit_delivered_status') {
+                $newStatus = $body['status'] ?? '';
+                if (!is_string($newStatus) || !in_array(trim($newStatus), ['confirmed', 'processing', 'shipped', 'delivered'], true)) {
+                    Response::json(422, ['success' => false, 'message' => 'Invalid status for a delivered order']);
+                }
+                $order = $orderModel->getOrderDetails($id);
+                if (!$order) {
+                    Response::json(404, ['success' => false, 'message' => 'Order not found']);
+                }
+                if ($order['status'] !== 'delivered') {
+                    Response::json(409, ['success' => false, 'message' => 'Only delivered orders can be edited here']);
+                }
+                try {
+                    $orderModel->updateDeliveredOrderStatus((int) $id, trim($newStatus));
+                } catch (InvalidArgumentException $e) {
+                    Response::json(422, ['success' => false, 'message' => $e->getMessage()]);
+                } catch (RuntimeException $e) {
+                    Response::json(409, ['success' => false, 'message' => $e->getMessage()]);
+                }
+                Response::json(200, ['success' => true, 'message' => 'Order status updated', 'data' => ['status' => trim($newStatus)]]);
+            }
             $newStatus = $body['status'] ?? '';
 
             if (!is_string($newStatus)) {

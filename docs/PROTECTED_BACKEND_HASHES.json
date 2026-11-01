@@ -1,0 +1,230 @@
+{
+  "actions/forgot-password.php": {
+    "source_sha256": "4e39a4552e28442e1bf4902c69a0842b7f3b682230e9a7c89b3d893a63174090",
+    "final_sha256": "4e39a4552e28442e1bf4902c69a0842b7f3b682230e9a7c89b3d893a63174090"
+  },
+  "actions/google-callback.php": {
+    "source_sha256": "9b0244c144ecdf3a162b8eb8d3311cf3fdb98d226810d50276148bfa7e4d4e3d",
+    "final_sha256": "9b0244c144ecdf3a162b8eb8d3311cf3fdb98d226810d50276148bfa7e4d4e3d"
+  },
+  "actions/google-login.php": {
+    "source_sha256": "0c0d93da634a5ba1b4c6da7bfc7d28ef2b4e7b6bdd71ef0c015061fd43429d77",
+    "final_sha256": "0c0d93da634a5ba1b4c6da7bfc7d28ef2b4e7b6bdd71ef0c015061fd43429d77"
+  },
+  "actions/login.php": {
+    "source_sha256": "6c3f52774b855fff6cac2e72cac928c3f78fc345f7c6c3251e3dec97cb5508cd",
+    "final_sha256": "6c3f52774b855fff6cac2e72cac928c3f78fc345f7c6c3251e3dec97cb5508cd"
+  },
+  "actions/logout.php": {
+    "source_sha256": "c19654a80d88ebde38c06933d99fd69b10a0c689cbd9ffdf973f684160a54e92",
+    "final_sha256": "c19654a80d88ebde38c06933d99fd69b10a0c689cbd9ffdf973f684160a54e92"
+  },
+  "actions/me.php": {
+    "source_sha256": "a435d32f361b26c5a06250c2a8d49b6b9c85de8bd497b21dda86d0de539aad56",
+    "final_sha256": "a435d32f361b26c5a06250c2a8d49b6b9c85de8bd497b21dda86d0de539aad56"
+  },
+  "actions/register.php": {
+    "source_sha256": "6650525396a9f1d7d2d31c883277b1ebe457c4d5c15e169a9c4c16d9bd865217",
+    "final_sha256": "6650525396a9f1d7d2d31c883277b1ebe457c4d5c15e169a9c4c16d9bd865217"
+  },
+  "actions/resend-otp.php": {
+    "source_sha256": "1171d17a89189ec38ab68e1799342a12b5760b73827f7508a123fea6df0a8e3a",
+    "final_sha256": "1171d17a89189ec38ab68e1799342a12b5760b73827f7508a123fea6df0a8e3a"
+  },
+  "actions/reset-password.php": {
+    "source_sha256": "4f60fcc84f821eca06a95c92b206582d044e08681f12d9da0272e7350cfaac45",
+    "final_sha256": "4f60fcc84f821eca06a95c92b206582d044e08681f12d9da0272e7350cfaac45"
+  },
+  "actions/verify-otp.php": {
+    "source_sha256": "ebb99e8a7e6c4996a525ce802b8107f49fabb55ca2c80ee0f88d5e9679e13bb9",
+    "final_sha256": "ebb99e8a7e6c4996a525ce802b8107f49fabb55ca2c80ee0f88d5e9679e13bb9"
+  },
+  "api/admin/catalog.php": {
+    "source_sha256": "535cc7ca0cfafc6488c29888320ec7b7d3eea25352733ac0402fb21b71079622",
+    "final_sha256": "535cc7ca0cfafc6488c29888320ec7b7d3eea25352733ac0402fb21b71079622"
+  },
+  "api/admin/customers.php": {
+    "source_sha256": "251d7151b53e62d2ca626fcd422e2ff9eda291bb15fc1c01041e45432edc86af",
+    "final_sha256": "251d7151b53e62d2ca626fcd422e2ff9eda291bb15fc1c01041e45432edc86af"
+  },
+  "api/admin/dashboard.php": {
+    "source_sha256": "44439b1421d0a943a0da480755a48e9ddc146fadef02c2029897ed69db9844a0",
+    "final_sha256": "44439b1421d0a943a0da480755a48e9ddc146fadef02c2029897ed69db9844a0"
+  },
+  "api/admin/reviews.php": {
+    "source_sha256": "a2fbded07aa3c1ea482c816d9d36aeb89905a9b1f0c7257ea714e7c985a2d072",
+    "final_sha256": "a2fbded07aa3c1ea482c816d9d36aeb89905a9b1f0c7257ea714e7c985a2d072"
+  },
+  "api/admin/wishlist.php": {
+    "source_sha256": "f769f710f938c650803cfa863413661ae25011eb0fc5fec2537f5614085d260f",
+    "final_sha256": "f769f710f938c650803cfa863413661ae25011eb0fc5fec2537f5614085d260f"
+  },
+  "api/admin-orders.php": {
+    "source_sha256": "a0e79de7d2a696e89d16f53ec08dfeb63ea4829fd7914ec94a649a9b268cb07f",
+    "final_sha256": "a0e79de7d2a696e89d16f53ec08dfeb63ea4829fd7914ec94a649a9b268cb07f"
+  },
+  "api/brand.php": {
+    "source_sha256": "7ccb176f60c8103c325d123157a03449d59a40e45a2d4afc5f03cd3545533afe",
+    "final_sha256": "7ccb176f60c8103c325d123157a03449d59a40e45a2d4afc5f03cd3545533afe"
+  },
+  "api/cart.php": {
+    "source_sha256": "f0fa237e5fd468bbb33bbf60ef6e32591fff0fe9301dc34baae18cad6c132262",
+    "final_sha256": "f0fa237e5fd468bbb33bbf60ef6e32591fff0fe9301dc34baae18cad6c132262"
+  },
+  "api/category-groups.php": {
+    "source_sha256": "7969410f4a2c436870bbf6ca0923e4b46fb3c4cd056e9803472d65a938485ded",
+    "final_sha256": "7969410f4a2c436870bbf6ca0923e4b46fb3c4cd056e9803472d65a938485ded"
+  },
+  "api/category.php": {
+    "source_sha256": "3fd5fa03a0d796dc8e27b548ff7070e4b9da08386eb9342a51d4077eec26534e",
+    "final_sha256": "3fd5fa03a0d796dc8e27b548ff7070e4b9da08386eb9342a51d4077eec26534e"
+  },
+  "api/coupon-validate.php": {
+    "source_sha256": "a615c2ad967f2729363b06f5d536eb375b5ad9c6fdff3b01b43ca7a7ee050bfb",
+    "final_sha256": "a615c2ad967f2729363b06f5d536eb375b5ad9c6fdff3b01b43ca7a7ee050bfb"
+  },
+  "api/coupons.php": {
+    "source_sha256": "81202b0f7fa9f3e298d1a4995f1e6d4d86cf5cd1a5289a56e96cfd01d0535952",
+    "final_sha256": "81202b0f7fa9f3e298d1a4995f1e6d4d86cf5cd1a5289a56e96cfd01d0535952"
+  },
+  "api/orders.php": {
+    "source_sha256": "ae1ff575dab2b92d1fe6a9bb95cb643511a611d750ee4a50d20dff2ef8fcb076",
+    "final_sha256": "ae1ff575dab2b92d1fe6a9bb95cb643511a611d750ee4a50d20dff2ef8fcb076"
+  },
+  "api/product-images.php": {
+    "source_sha256": "3de7d7b06fd4d247dd1a08a076635f17915733ae2481b2a1d1f5973de6f544c7",
+    "final_sha256": "3de7d7b06fd4d247dd1a08a076635f17915733ae2481b2a1d1f5973de6f544c7"
+  },
+  "api/product-variant.php": {
+    "source_sha256": "e3682b3545bc5574c9d043e7af2bdb430ecaa5b89d7586d12e4afba63f8bb01f",
+    "final_sha256": "e3682b3545bc5574c9d043e7af2bdb430ecaa5b89d7586d12e4afba63f8bb01f"
+  },
+  "api/products.php": {
+    "source_sha256": "d876022ce41c2c095908479cfbaf5819203fa6f69a8fe5a86393048139bd85a3",
+    "final_sha256": "d876022ce41c2c095908479cfbaf5819203fa6f69a8fe5a86393048139bd85a3"
+  },
+  "api/reviews.php": {
+    "source_sha256": "63ab1c5bce6c699a2e9ba9562a5f9dc57679ce46c621f05cc6e88ede80caceb8",
+    "final_sha256": "63ab1c5bce6c699a2e9ba9562a5f9dc57679ce46c621f05cc6e88ede80caceb8"
+  },
+  "api/storefront-products.php": {
+    "source_sha256": "2519ba3b9737326166315d73b871e16fe36d97def80d3f02c7028627c7e6f12c",
+    "final_sha256": "2519ba3b9737326166315d73b871e16fe36d97def80d3f02c7028627c7e6f12c"
+  },
+  "api/wishlist.php": {
+    "source_sha256": "cfeb871b43760f38d1f88140e25ef1d45504424c3afb85be3e07ce6d667eeee7",
+    "final_sha256": "cfeb871b43760f38d1f88140e25ef1d45504424c3afb85be3e07ce6d667eeee7"
+  },
+  "classes/Brand.php": {
+    "source_sha256": "3052f0b342dcb9960c9a38042a7269907c1aea7838067f71e729f496d58f1ae0",
+    "final_sha256": "3052f0b342dcb9960c9a38042a7269907c1aea7838067f71e729f496d58f1ae0"
+  },
+  "classes/Cart.php": {
+    "source_sha256": "64fbccfa5756350d49dfd65bb51d6472ff99e5ebe7d0fa652c2cf3bc98a7a891",
+    "final_sha256": "64fbccfa5756350d49dfd65bb51d6472ff99e5ebe7d0fa652c2cf3bc98a7a891"
+  },
+  "classes/Category.php": {
+    "source_sha256": "a17e1439fb165cff64a6bae2a4138dbb9fe38c99f733353cbf5600452fdef62f",
+    "final_sha256": "a17e1439fb165cff64a6bae2a4138dbb9fe38c99f733353cbf5600452fdef62f"
+  },
+  "classes/CategoryGroup.php": {
+    "source_sha256": "59d9409f4fc343c5b0ed1d567308df4ae4835443640adbb68354be5380407329",
+    "final_sha256": "59d9409f4fc343c5b0ed1d567308df4ae4835443640adbb68354be5380407329"
+  },
+  "classes/Coupon.php": {
+    "source_sha256": "f77b7f3d67126ecfa4476c50d4b5097416229acce10fde6a1c1c7ed6a59b250b",
+    "final_sha256": "f77b7f3d67126ecfa4476c50d4b5097416229acce10fde6a1c1c7ed6a59b250b"
+  },
+  "classes/CouponService.php": {
+    "source_sha256": "e5f6e63e402ce39d15128457d74fd2ad1ed9919f20ddf755331d82650cabe93d",
+    "final_sha256": "e5f6e63e402ce39d15128457d74fd2ad1ed9919f20ddf755331d82650cabe93d"
+  },
+  "classes/EmailVerification.php": {
+    "source_sha256": "42a6fc8cdb18d0ff1aff25db99d7a5ffc2d601849b1e7cbaa57e63d55026b665",
+    "final_sha256": "42a6fc8cdb18d0ff1aff25db99d7a5ffc2d601849b1e7cbaa57e63d55026b665"
+  },
+  "classes/GoogleAuth.php": {
+    "source_sha256": "4a6b509987b6416479e3e17047a7777f8d34398690762206f91f430d19f34f36",
+    "final_sha256": "4a6b509987b6416479e3e17047a7777f8d34398690762206f91f430d19f34f36"
+  },
+  "classes/GuestCart.php": {
+    "source_sha256": "ed705eb7e7b378666c72b9a42be9277abd1d41962462db15942c79eb4304c600",
+    "final_sha256": "ed705eb7e7b378666c72b9a42be9277abd1d41962462db15942c79eb4304c600"
+  },
+  "classes/MailService.php": {
+    "source_sha256": "ce61fb67981fcb970a86331a4e7f971eef0db30cd54af23f31e7c71a3030e215",
+    "final_sha256": "ce61fb67981fcb970a86331a4e7f971eef0db30cd54af23f31e7c71a3030e215"
+  },
+  "classes/Order.php": {
+    "source_sha256": "309af9476253c14c9cec5ab7a804300df17c359036b28902de25a6abf487848c",
+    "final_sha256": "309af9476253c14c9cec5ab7a804300df17c359036b28902de25a6abf487848c"
+  },
+  "classes/PasswordReset.php": {
+    "source_sha256": "271c00ca750c0d2e41ba27dcc43845a514b108e7bbbc45f26a1417b1c1aa96cb",
+    "final_sha256": "271c00ca750c0d2e41ba27dcc43845a514b108e7bbbc45f26a1417b1c1aa96cb"
+  },
+  "classes/Product.php": {
+    "source_sha256": "e8433c28a8549f87f8d7e5f16978c21197375295d7880c32e4627d49752a5805",
+    "final_sha256": "e8433c28a8549f87f8d7e5f16978c21197375295d7880c32e4627d49752a5805"
+  },
+  "classes/ProductImage.php": {
+    "source_sha256": "8b2e8b20c6eec732fd06dd511e7d78d4da17dacd1140d2d057a98e3073a9796a",
+    "final_sha256": "8b2e8b20c6eec732fd06dd511e7d78d4da17dacd1140d2d057a98e3073a9796a"
+  },
+  "classes/ProductVariant.php": {
+    "source_sha256": "4fa109ba18f97ce2b9fe927240b9dac517b48ae6a97fb7ed2f86f8c64ff92dc6",
+    "final_sha256": "4fa109ba18f97ce2b9fe927240b9dac517b48ae6a97fb7ed2f86f8c64ff92dc6"
+  },
+  "classes/RateLimiter.php": {
+    "source_sha256": "71feb6029fad997195df59220dbf3bfecef5d566063392cd4c55a1e8f44c0dae",
+    "final_sha256": "71feb6029fad997195df59220dbf3bfecef5d566063392cd4c55a1e8f44c0dae"
+  },
+  "classes/Review.php": {
+    "source_sha256": "8b549ca76f4f1a9d2eb3bfdc477bff775690a9ae136f801669497c187d76c27a",
+    "final_sha256": "8b549ca76f4f1a9d2eb3bfdc477bff775690a9ae136f801669497c187d76c27a"
+  },
+  "classes/User.php": {
+    "source_sha256": "9add13db4f75a7b290b05226ab4b690ac1740481eec4bafae34e52fe7c673c11",
+    "final_sha256": "9add13db4f75a7b290b05226ab4b690ac1740481eec4bafae34e52fe7c673c11"
+  },
+  "classes/Wishlist.php": {
+    "source_sha256": "9d8d64c0e50d757035e57d495d9565076fcd8443ed1aa27b7f317b5a2922b64f",
+    "final_sha256": "9d8d64c0e50d757035e57d495d9565076fcd8443ed1aa27b7f317b5a2922b64f"
+  },
+  "composer.json": {
+    "source_sha256": "0c96caadf3433aa0cea02c1391b58a23494f8d479adbe933287ea6636217447e",
+    "final_sha256": "0c96caadf3433aa0cea02c1391b58a23494f8d479adbe933287ea6636217447e"
+  },
+  "composer.lock": {
+    "source_sha256": "aecc1a1fabf59d8f9b372d8ba1144d13e00ba3e501c4060c1bf7286728ea2007",
+    "final_sha256": "aecc1a1fabf59d8f9b372d8ba1144d13e00ba3e501c4060c1bf7286728ea2007"
+  },
+  "config/Database.php": {
+    "source_sha256": "b15fd12c3f7277da905bdeb384b1a1e441e5bb1253dcb7e89df17919c9354a01",
+    "final_sha256": "b15fd12c3f7277da905bdeb384b1a1e441e5bb1253dcb7e89df17919c9354a01"
+  },
+  "config/google.php": {
+    "source_sha256": "483b119c9d5bfac62a95aae858a03b0918f35b167a2fad11e61b6ed8012c0fec",
+    "final_sha256": "483b119c9d5bfac62a95aae858a03b0918f35b167a2fad11e61b6ed8012c0fec"
+  },
+  "config/mail.php": {
+    "source_sha256": "f5c8ed5238f64889210bea414becb22088052585f26db0a5c28acb0b521a7864",
+    "final_sha256": "f5c8ed5238f64889210bea414becb22088052585f26db0a5c28acb0b521a7864"
+  },
+  "config/strip.php": {
+    "source_sha256": "77d8ff11aed34f0a446644dc7cbda62a0c5c52435764a3497d5444a4f603c259",
+    "final_sha256": "77d8ff11aed34f0a446644dc7cbda62a0c5c52435764a3497d5444a4f603c259"
+  },
+  "core/Response.php": {
+    "source_sha256": "87026f4315e7d61058952b4f5812757dc0803f01ef0157dc4785cdd1a4fd04a3",
+    "final_sha256": "87026f4315e7d61058952b4f5812757dc0803f01ef0157dc4785cdd1a4fd04a3"
+  },
+  "database/schema.sql": {
+    "source_sha256": "fa58ff4991d4f24975e751e3f173e1148909755c9da7bb4a2c6bf0fb41b2e066",
+    "final_sha256": "fa58ff4991d4f24975e751e3f173e1148909755c9da7bb4a2c6bf0fb41b2e066"
+  },
+  "postman/perfume-api.json": {
+    "source_sha256": "e3566b3a06430868d71e9287dfd6c6c520a3da027aabea01951d407ee131dc2f",
+    "final_sha256": "e3566b3a06430868d71e9287dfd6c6c520a3da027aabea01951d407ee131dc2f"
+  }
+}

@@ -1,0 +1,142 @@
+[
+  {
+    "file": "register.php",
+    "change": "modified"
+  },
+  {
+    "file": "forgot-password.php",
+    "change": "modified"
+  },
+  {
+    "file": "success.php",
+    "change": "modified"
+  },
+  {
+    "file": "index.php",
+    "change": "modified"
+  },
+  {
+    "file": "product.php",
+    "change": "modified"
+  },
+  {
+    "file": "order.php",
+    "change": "modified"
+  },
+  {
+    "file": "reset-password.php",
+    "change": "modified"
+  },
+  {
+    "file": "order-success.php",
+    "change": "modified"
+  },
+  {
+    "file": "products.php",
+    "change": "modified"
+  },
+  {
+    "file": "account.php",
+    "change": "modified"
+  },
+  {
+    "file": "checkout.php",
+    "change": "modified"
+  },
+  {
+    "file": "wishlist.php",
+    "change": "modified"
+  },
+  {
+    "file": "cart.php",
+    "change": "modified"
+  },
+  {
+    "file": "login.php",
+    "change": "modified"
+  },
+  {
+    "file": "includes/admin-header.php",
+    "change": "modified"
+  },
+  {
+    "file": "includes/store-footer.php",
+    "change": "modified"
+  },
+  {
+    "file": "includes/store-header.php",
+    "change": "modified"
+  },
+  {
+    "file": "src/cinematic.js",
+    "change": "modified"
+  },
+  {
+    "file": "src/gold-liquid-visibility.css",
+    "change": "added"
+  },
+  {
+    "file": "docs/FRONTEND_QA_RESULTS_AR.md",
+    "change": "added"
+  },
+  {
+    "file": "docs/RUN_INSTRUCTIONS_AR.md",
+    "change": "modified"
+  },
+  {
+    "file": "docs/BACKEND_SHA256_MANIFEST.json",
+    "change": "added"
+  },
+  {
+    "file": "docs/CHANGE_MANIFEST.json",
+    "change": "added"
+  },
+  {
+    "file": "docs/VELORA_DESIGN_CHANGELOG_AR.md",
+    "change": "added"
+  },
+  {
+    "file": "docs/visual-qa/account-1440.png",
+    "change": "added"
+  },
+  {
+    "file": "docs/visual-qa/products-390.png",
+    "change": "added"
+  },
+  {
+    "file": "docs/visual-qa/products-1440.png",
+    "change": "added"
+  },
+  {
+    "file": "docs/visual-qa/login-390.png",
+    "change": "added"
+  },
+  {
+    "file": "docs/visual-qa/cart-1440.png",
+    "change": "added"
+  },
+  {
+    "file": "docs/visual-qa/VISUAL_PREVIEW_RESULTS.json",
+    "change": "added"
+  },
+  {
+    "file": "docs/visual-qa/login-1440.png",
+    "change": "added"
+  },
+  {
+    "file": "assets/cinematic/gold-liquid-poster.webp",
+    "change": "added"
+  },
+  {
+    "file": "assets/js/storefront.js",
+    "change": "modified"
+  },
+  {
+    "file": "assets/css/velora-admin-v2.css",
+    "change": "added"
+  },
+  {
+    "file": "assets/css/velora-interior-v2.css",
+    "change": "added"
+  }
+]
