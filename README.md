@@ -13,8 +13,8 @@ Velora is a fully custom, premium e-commerce web application designed for a luxu
 ## Relative Links:
 | **Github** | https://github.com/SondosNazzal04/perfume_ecommerce.git |
 | **Trello** | https://trello.com/b/RehN2awk/e-commerce-project |
-| **Figma** | |
-| **Live Url**| |
+| **Figma** | https:// |
+| **Live Url**| https:// |
 
 ## Features
 ### User Experience (Frontend)
@@ -46,8 +46,7 @@ Velora is a fully custom, premium e-commerce web application designed for a luxu
 ## Project Structure
 ```
 .
-├──
-actions/                # Form submission handlers (login, register, reset-password, google-auth)
+├── actions/                # Form submission handlers (login, register, reset-password, google-auth)
 ├── admin/              # Administrative interface and order management
 ├── api/                # RESTful API endpoints for dynamic data loading
 ├── assets/             # Static assets (CSS, JS, product images, banners)
