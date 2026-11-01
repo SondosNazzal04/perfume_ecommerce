@@ -4,13 +4,15 @@ Velora is a fully custom, premium e-commerce web application designed for a luxu
 ## This Project was done by:
 | Name | Role | Github |
 | ---- | ---- | ------ |
-| Sondos Nazzal | Scrum Master | @SondosNazzal04 |
-| Ahmad AlHawwari | Product Owner | @Ahmad-alhwari0 |
-| Ahmad Meshal | Developer | @ahmadmeshaal |
-| Naser Bader | Developer | @Naser-devops |
-| Rahaf AlKayyali | Developer | @alkayyalirahaf |
+| Sondos Nazzal | Scrum Master | [@SondosNazzal04](https://github.com/SondosNazzal04) |
+| Ahmad AlHawwari | Product Owner | [@Ahmad-alhwari0](https://github.com/Ahmad-alhwari0) |
+| Ahmad Meshal | Developer | [@ahmadmeshaal](https://github.com/ahmadmeshaal) |
+| Naser Bader | Developer | [@Naser-devops] (https://github.com/Naser-devops) |
+| Rahaf AlKayyali | Developer | [@alkayyalirahaf](https://github.com/alkayyalirahaf) |
 
 ## Relative Links:
+| | |
+|---|---|
 | **Github** | https://github.com/SondosNazzal04/perfume_ecommerce.git |
 | **Trello** | https://trello.com/b/RehN2awk/e-commerce-project |
 | **Figma** | https:// |
