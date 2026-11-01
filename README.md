@@ -5,7 +5,7 @@ Velora is a fully custom, premium e-commerce web application designed for a luxu
 | Name | Role | Github |
 | ---- | ---- | ------ |
 | Sondos Nazzal | Scrum Master | [@SondosNazzal04](https://github.com/SondosNazzal04) |
-| Ahmad AlHawwari | Product Owner | [@Ahmad-alhwari0](https://github.com/Ahmad-alhwari0) |
+| Ahmad AlHawari | Product Owner | [@Ahmad-alhwari0](https://github.com/Ahmad-alhwari0) |
 | Ahmad Meshal | Developer | [@ahmadmeshaal](https://github.com/ahmadmeshaal) |
 | Naser Bader | Developer | [@Naser-devops](https://github.com/Naser-devops) |
 | Rahaf AlKayyali | Developer | [@alkayyalirahaf](https://github.com/alkayyalirahaf) |
